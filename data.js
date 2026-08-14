@@ -11,7 +11,7 @@ const CITIES={
  "Shanghai":[2,2,3,0,3,1,-3],"London":[1,1,-1,-2,2,1,-2],"Copenhagen":[-1,3,1,-1,-1,1,1],
  "Paris":[0,2,-2,1,1,2,-2],"Berlin":[1,-1,1,-2,1,2,0],"Marrakech":[-1,-2,-3,3,-1,1,1],
  "Sydney":[-1,1,1,2,1,1,3],"Mumbai":[3,-3,-1,3,2,1,-1],"Amsterdam":[-1,2,-1,0,-2,1,1],
- "Prague":[-1,1,-3,-1,-1,0,-1],"Tokyo":[3,3,3,-1,3,1,-3],"Stockholm":[-1,3,2,-2,-1,-1,2],
+ "Tokyo":[3,3,3,-1,3,1,-3],"Stockholm":[-1,3,2,-2,-1,-1,2],
  "Madrid":[1,0,-1,2,1,2,-1],"Barcelona":[1,-1,-1,2,-1,3,1],"Lisbon":[-2,-1,-2,2,-2,1,1],
  "Dubai":[2,2,3,-1,3,3,-1],"Buenos Aires":[1,-1,-2,2,1,2,-1],"Seoul":[2,2,3,2,3,2,0],
  "Bangkok":[2,-3,1,3,2,3,-1],"Naples":[2,-3,-2,1,1,2,1],
@@ -20,9 +20,9 @@ const CITIES={
  "Kyoto":[-2,2,-3,-1,-1,0,1],"Beirut":[2,-3,-1,2,1,3,0],
  "Hong Kong":[3,1,2,0,3,2,0],"Miami":[1,-1,1,3,1,3,1],"Chiang Mai":[-2,-2,-2,2,-2,0,3],
  "Bogotá":[0,-2,-1,1,1,1,3],"Cairo":[2,-3,-2,1,3,1,-1],"Kathmandu":[-1,-3,-3,2,-1,0,3],
- "Athens":[0,-2,-3,0,2,0,1]};
+ "Athens":[0,-2,-3,0,2,0,1],"Zurich":[-1,3,1,-2,0,-2,1]};
 // fairness offsets — learned so every city is ~equally reachable (1.5%–6% across random runs)
-const BIAS={"Los Angeles":-1.4,"New York":1.9,"Istanbul":3.3,"Rio de Janeiro":1.7,"Mexico City":1.6,"Singapore":-6.4,"Shanghai":1.9,"London":-4.1,"Copenhagen":-1.4,"Paris":-2.1,"Berlin":-5.4,"Marrakech":-2.6,"Sydney":-0.3,"Mumbai":6.9,"Amsterdam":-0.5,"Prague":4.0,"Tokyo":11.6,"Stockholm":6.5,"Madrid":-2.2,"Barcelona":-2.8,"Lisbon":-5.8,"Dubai":-1.8,"Buenos Aires":-0.2,"Seoul":-9.1,"Bangkok":5.6,"Naples":5.6,"Vienna":-9.9,"Cape Town":-9.7,"Reykjavík":1.3,"Vancouver":-12.9,"Kyoto":-0.2,"Beirut":3.4,"Hong Kong":2.6,"Miami":1.7,"Chiang Mai":0.9,"Bogotá":2.0,"Cairo":6.6,"Kathmandu":1.4,"Athens":3.9};
+const BIAS={"Los Angeles":-0.7,"New York":0.4,"Istanbul":3.7,"Rio de Janeiro":1.7,"Mexico City":2.4,"Singapore":-4.8,"Shanghai":2.1,"London":-4.9,"Copenhagen":-1.8,"Paris":-4.3,"Berlin":-6.7,"Marrakech":1.0,"Sydney":-0.8,"Mumbai":6.3,"Amsterdam":-2.8,"Tokyo":0.9,"Stockholm":-2.2,"Madrid":-0.8,"Barcelona":-3.1,"Lisbon":-1.1,"Dubai":-1.6,"Buenos Aires":-0.3,"Seoul":3.4,"Bangkok":3.2,"Naples":3.5,"Vienna":-5.2,"Cape Town":0.2,"Reykjavík":-0.8,"Vancouver":-2.8,"Kyoto":-0.8,"Beirut":3.5,"Hong Kong":-1.7,"Miami":0.3,"Chiang Mai":1.1,"Cairo":5.7,"Kathmandu":4.0,"Athens":4.6,"Bogotá":1.7,"Zurich":-2.2};
 const BIO={
  "Los Angeles":"Sprawling and sun-bleached. Life runs on cars, side projects, and the industry orbit \u2014 everyone half in film, music, or wellness.",
  "New York":"Vertical and fast. People live small and public, out constantly, eating and working at all hours.",
@@ -39,7 +39,6 @@ const BIO={
  "Sydney":"Bright and coastal. Mornings start with the water \u2014 swims, runs, coffee \u2014 and life stays outdoors and casual.",
  "Mumbai":"Dense and salt-worn. Daily life runs on brutal commutes and side hustles, cricket in every empty lot, films as common ground.",
  "Amsterdam":"Compact and tilted. People cycle everywhere and prize a blunt, live-and-let-live ease.",
- "Prague":"Gothic and intact. Beer halls, trams, and a dry humor carry the city day to day.",
  "Tokyo":"Immense but quiet. A city of small precise rituals and deep subcultures, orderly in public, strange in the details.",
  "Stockholm":"Cool and watery. Life leans on coffee breaks, clean design, and a strong pull to the outdoors.",
  "Madrid":"Golden and unhurried. Life happens outdoors and at the table \u2014 terrace dinners that run late, families out past midnight, bars over apps.",
@@ -62,7 +61,8 @@ const BIO={
  "Bogot\u00e1":"High and green. Gritty and creative: caf\u00e9s, car-free Sundays on bikes, a city rebuilding its name.",
  "Cairo":"Vast and ancient. Twenty-odd million people, tea houses and gridlock, life loud and improvised.",
  "Kathmandu":"Sacred and chaotic. Life mixes the devotional and the ramshackle \u2014 shrines, trekkers, power cuts, momos.",
- "Athens":"Ancient and sun-worn. Gritty and unpolished: late nights, strikes, souvlaki, island ferries out of Piraeus."};
+ "Athens":"Ancient and sun-worn. Gritty and unpolished: late nights, strikes, souvlaki, island ferries out of Piraeus.",
+ "Zurich":"Quiet and exact. Life is discreet money, lake swims, punctual trams, and luxury that refuses to show off."};
 
 const g=s=>`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${s}</svg>`;
 const G={
