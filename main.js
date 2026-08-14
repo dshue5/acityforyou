@@ -1,8 +1,13 @@
 /* Quiz engine — matching, calibration, rendering. */
 const NQ=FAMILIES.length;
 
-let step=0, sum=AXES.map(()=>0), started=false;
+let step=0, sum=AXES.map(()=>0), started=false, mobileSelected=null;
 const app=document.getElementById("app");
+/* Touch devices tap-select then confirm via a Submit button instead of
+   advancing on first tap — a bare tap-to-advance is too easy to fire by
+   accident while scrolling/steadying the phone. Desktop keeps the
+   original single-click-advances flow. */
+const isTouch=matchMedia("(hover: none) and (pointer: coarse)").matches;
 
 const SCALE=9;
 const fmt=n=>(n>0?"+":"")+n;
@@ -83,6 +88,18 @@ preloadAllArt();
    (see .q .w in style.css). Safe here because every <em> in data.js wraps
    a single whole word with no internal spaces. */
 function wordsHTML(html){return html.split(" ").map((w,i)=>`<span class="w" style="--i:${i}">${w}</span>`).join(" ");}
+/* On touch, a tap only highlights the option (see mobileSelect); the
+   answer isn't locked in until mobileSubmit fires via the Submit button.
+   On desktop, a click still chooses immediately as before. */
+function optClick(i){return isTouch?`mobileSelect(${i},this)`:`choose(${i})`;}
+window.mobileSelect=(i,el)=>{
+  mobileSelected=i;
+  el.parentElement.querySelectorAll(".selected").forEach(x=>x.classList.remove("selected"));
+  el.classList.add("selected");
+  const btn=document.getElementById("mobileSubmit");
+  if(btn)btn.disabled=false;
+};
+window.mobileSubmit=()=>{if(mobileSelected!=null)choose(mobileSelected);};
 function deltaHTML(v){return AXES.filter(a=>v[a]).map(a=>{const n=v[a];return `<span>${DISP[a][0]} <span class="${n>0?'up':'dn'}">${fmt(n)}</span></span>`;}).join("");}
 /* Bespoke per-question art: one shared photo, each answer is a clip-path
    hotspot cut to that item's silhouette (hand-placed % points in data.js,
@@ -90,7 +107,7 @@ function deltaHTML(v){return AXES.filter(a=>v[a]).map(a=>{const n=v[a];return `<
    that item; the source image is never split into separate files. */
 function renderArt(f){
   const hots=f.opts.map((o,i)=>`
-    <button class="keyhot" style="clip-path:polygon(${o.hot})" onclick="choose(${i})" aria-label="${o.lab}">
+    <button class="keyhot" style="clip-path:polygon(${o.hot})" onclick="${optClick(i)}" aria-label="${o.lab}">
       <img data-strip="${f.img}" src="${f.img}" alt="" draggable="false">
     </button>`).join("");
   return `<div class="art-wrap">
@@ -114,13 +131,16 @@ function render(){
   const f=FAMILIES[step];
   const isPhotoRow=!f.img&&f.opts.every(o=>o.img);
   if(isPhotoRow)shuffle(f.opts);
+  mobileSelected=null;
   const answers=f.img?renderArt(f):isPhotoRow
-    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="choose(${i})" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
-    :`<div class="opts ${f.cols||''}">${f.opts.map((o,i)=>`<button class="card" onclick="choose(${i})"><span class="idx">0${i+1}</span>${G[o.k]}<span class="lab">${o.lab}</span><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`;
+    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="${optClick(i)}" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
+    :`<div class="opts ${f.cols||''}">${f.opts.map((o,i)=>`<button class="card" onclick="${optClick(i)}"><span class="idx">0${i+1}</span>${G[o.k]}<span class="lab">${o.lab}</span><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`;
+  const submitBtn=isTouch?`<button class="mobile-submit" id="mobileSubmit" onclick="mobileSubmit()" disabled>Submit</button>`:"";
   app.innerHTML=`<div class="stage">
      <div class="prog"><span>STEP <b>${String(step+1).padStart(2,'0')}</b> / ${NQ}</span><div class="bar"><i style="width:${step/NQ*100}%"></i></div></div>
      <h2 class="q">${wordsHTML(f.q)}</h2>
      ${answers}
+     ${submitBtn}
    </div>`;
   applyBgStrip();
 }

@@ -125,6 +125,15 @@ body{
 @media(max-width:560px){.opts,.opts.six{grid-template-columns:1fr 1fr}}
 @media(max-width:420px){.opts,.opts.six{grid-template-columns:1fr}}
 
+/* Touch-only confirm step (see mobileSelect/mobileSubmit in main.js): a
+   tap highlights an option via .selected, this button locks it in. */
+.mobile-submit{
+  display:block;margin:8px auto 0;background:var(--ink);color:#fff;border:none;font-weight:600;
+  font-family:var(--mono);font-size:14px;padding:14px 36px;border-radius:var(--radius-sm);
+  cursor:pointer;transition:background 160ms ease,opacity 160ms ease;
+}
+.mobile-submit:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+
 /* Bespoke image-hotspot answers (see renderArt in main.js). One shared
    photo; each answer is a <button> clipped to that item's silhouette via
    a hand-placed clip-path polygon, so hover/focus highlights only that
@@ -138,10 +147,17 @@ body{
   transition:filter 220ms ease,transform 220ms cubic-bezier(.22,1,.36,1);
 }
 .keyhot img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none}
-.keyhot:hover,.keyhot:focus-visible{
+.keyhot:focus-visible,.keyhot.selected{
   filter:brightness(1.22) contrast(1.05) saturate(1.2) drop-shadow(0 18px 30px rgba(10,10,10,.4)) drop-shadow(0 0 14px rgba(10,10,10,.18));
   transform:scale(1.065);
   outline:none;
+}
+@media(hover:hover){
+  .keyhot:hover{
+    filter:brightness(1.22) contrast(1.05) saturate(1.2) drop-shadow(0 18px 30px rgba(10,10,10,.4)) drop-shadow(0 0 14px rgba(10,10,10,.18));
+    transform:scale(1.065);
+    outline:none;
+  }
 }
 .card{
   background:var(--card);color:var(--ink);border:1px solid var(--line);text-align:left;
@@ -150,12 +166,17 @@ body{
   transition:transform 200ms cubic-bezier(0.22,1,0.36,1),box-shadow 200ms cubic-bezier(0.22,1,0.36,1);
   font-family:var(--mono);
 }
-.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.card.selected{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:var(--ink)}
 .card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .card svg{width:36px;height:36px;display:block;margin-bottom:14px;color:var(--muted)}
-.card:hover svg{color:var(--ink)}
+.card.selected svg{color:var(--ink)}
 .card-photo{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;margin-bottom:12px;transition:transform 200ms cubic-bezier(0.22,1,0.36,1)}
-.card:hover .card-photo{transform:scale(1.04)}
+.card.selected .card-photo{transform:scale(1.04)}
+@media(hover:hover){
+  .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  .card:hover svg{color:var(--ink)}
+  .card:hover .card-photo{transform:scale(1.04)}
+}
 .card .lab{font-weight:600;font-size:15px;letter-spacing:-0.01em;line-height:1.25}
 .two .card .lab{font-size:18px}
 .card .idx{position:absolute;top:14px;right:15px;font-family:var(--mono);font-size:10px;color:var(--muted)}
@@ -175,7 +196,8 @@ body{
   flex:1 1 0;min-width:0;max-width:300px;font-family:var(--mono);
   transition:transform 200ms cubic-bezier(0.22,1,0.36,1);
 }
-.card-float:hover{transform:translateY(-6px);z-index:5}
+.card-float.selected{transform:translateY(-6px);z-index:5}
+@media(hover:hover){.card-float:hover{transform:translateY(-6px);z-index:5}}
 
 /* Dense mode (6-option rows: drinks, vinyls) — near-zero gap plus a
    negative-margin overlap between neighbors, safe because every photo's
@@ -192,7 +214,8 @@ body{
   filter:drop-shadow(0 14px 20px rgba(10,10,10,.14));
   transition:transform 200ms cubic-bezier(0.22,1,0.36,1),filter 200ms ease;
 }
-.card-float:hover .card-photo{transform:scale(1.06);filter:drop-shadow(0 20px 26px rgba(10,10,10,.20))}
+.card-float.selected .card-photo{transform:scale(1.06);filter:drop-shadow(0 20px 26px rgba(10,10,10,.20))}
+@media(hover:hover){.card-float:hover .card-photo{transform:scale(1.06);filter:drop-shadow(0 20px 26px rgba(10,10,10,.20))}}
 .card-float .deltas{justify-content:center;margin-top:8px}
 
 .deltas{margin-top:10px;font-family:var(--mono);font-size:10.5px;line-height:1.5;color:var(--muted);display:none;flex-wrap:wrap;gap:3px 9px}
