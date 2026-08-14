@@ -1,0 +1,287 @@
+/* Edict Display — same licensed local files used on home.dshue.com. */
+@font-face {
+  font-family: 'Edict Display';
+  src: url('fonts/EdictDisplay-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Edict Display';
+  src: url('fonts/EdictDisplay-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root{
+  --bg:#ffffff; --ink:#0a0a0a; --muted:#8a8a8a; --line:#ececec;
+  --card:#ffffff; --paper:#f4f4f4;
+  --pad:40px; --radius:24px; --radius-sm:14px;
+  --shadow:
+    0 1px 2px rgba(15,17,22,.04),
+    0 4px 10px rgba(15,17,22,.05),
+    0 24px 60px rgba(15,17,22,.10);
+  --shadow-hover:
+    0 1px 2px rgba(15,17,22,.05),
+    0 6px 14px rgba(15,17,22,.07),
+    0 36px 80px rgba(15,17,22,.14);
+  --disp:'Edict Display', Georgia, 'Times New Roman', serif;
+  --mono:'Inter', -apple-system, system-ui, sans-serif;
+  /* main.js writes these two var() names inline — kept monochrome to match
+     the ink/muted-only palette used across dshue.com (no spot colors). */
+  --ultra: var(--ink);
+  --coral: var(--muted);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+
+/* Opening loading screen — rapidly shuffles through real city photos
+   (see preloadAllArt/runLoader in main.js) as a teaser before the quiz
+   reveals itself, matching the shuffle-loader pattern used on Brand
+   Alchemist. Sits above everything; fades out once the shuffle settles. */
+#loadOverlay{
+  position:fixed;inset:0;z-index:999;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity 420ms ease;
+}
+#loadImg{
+  width:min(56vw,420px);aspect-ratio:1/1;object-fit:cover;
+  display:block;
+}
+#loadBarWrap{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--line)}
+#loadBar{height:100%;width:0;background:var(--ink)}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--mono); -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.01em; min-height:100vh;
+  display:flex; flex-direction:column;
+}
+
+.wrap{flex:1;display:flex;flex-direction:column;max-width:1320px;width:100%;margin:0 auto;padding:24px var(--pad) 40px}
+
+.top{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.mark{
+  font-family:var(--disp);font-weight:300;font-size:20px;color:var(--muted);
+  text-decoration:none;transition:color 160ms ease;
+}
+.mark:hover{color:var(--ink)}
+
+/* #app fills the remaining viewport height below the slim top bar, so
+   .stage / .intro (its only children) can flex:1 and truly center in
+   whatever's left of the screen — full-page per question, no sidebar. */
+#app{flex:1;display:flex;flex-direction:column;min-height:0}
+
+.intro{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:32px;opacity:1;transition:opacity 450ms ease;
+}
+.intro.fade-out{opacity:0}
+.intro-title{
+  font-family:var(--disp);font-weight:300;font-size:clamp(32px,7vw,88px);
+  letter-spacing:-0.03em;line-height:1.02;margin:0;color:var(--ink);
+  white-space:nowrap;
+}
+.intro-title em{font-style:italic}
+.intro-start{
+  background:none;border:1px solid var(--line);color:var(--muted);
+  font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:0;
+  padding:13px 28px;border-radius:999px;cursor:pointer;
+  transition:color 160ms ease,border-color 160ms ease;
+}
+.intro-start:hover{color:var(--ink);border-color:var(--ink)}
+
+.stage{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;width:100%;padding:40px 0;
+  animation:stage-in 460ms cubic-bezier(.22,1,.36,1);
+  transition:opacity 340ms ease, transform 340ms cubic-bezier(.4,0,1,1);
+}
+.stage.leaving{opacity:0;transform:translateY(-22px)}
+@keyframes stage-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.stage-result{padding-top:60px;padding-bottom:60px}
+
+.prog{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:14px;margin-bottom:28px;letter-spacing:0;width:100%;max-width:640px}
+.prog b{color:var(--ink);font-weight:700}
+.bar{flex:1;height:2px;background:var(--line);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--ink);transition:width .4s cubic-bezier(.2,.8,.2,1)}
+
+.q{
+  font-family:var(--disp);font-weight:300;font-size:clamp(30px,5vw,52px);
+  letter-spacing:-0.02em;line-height:1.15;margin:0 0 36px;max-width:18ch;color:var(--ink);
+}
+.q em{font-style:italic}
+/* Word-by-word cascade — plain CSS animation (not transition) so it
+   auto-plays every time a fresh .q is inserted, no JS timing needed. */
+.q .w,.intro-title .w{display:inline-block;opacity:0;transform:translateY(16px);animation:word-in 560ms cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--i) * 60ms + 120ms)}
+@keyframes word-in{to{opacity:1;transform:none}}
+.intro-title .w{animation-delay:calc(var(--i) * 90ms + 200ms)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.opts.six{grid-template-columns:1fr 1fr 1fr}
+.opts.two{grid-template-columns:1fr 1fr;max-width:560px}
+@media(max-width:560px){.opts,.opts.six{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.opts,.opts.six{grid-template-columns:1fr}}
+
+/* Bespoke image-hotspot answers (see renderArt in main.js). One shared
+   photo; each answer is a <button> clipped to that item's silhouette via
+   a hand-placed clip-path polygon, so hover/focus highlights only that
+   item without needing the source image cut into separate files. */
+.art-wrap{position:relative;width:100%;max-width:min(80vw,680px);aspect-ratio:1/1;margin:0 auto 64px}
+.art-base{width:100%;height:100%;display:block;object-fit:contain;pointer-events:none;user-select:none}
+.keyhot{
+  position:absolute;inset:0;width:100%;height:100%;padding:0;margin:0;border:0;background:none;
+  cursor:pointer;transform-origin:center;
+  filter:brightness(1) saturate(1) drop-shadow(0 0 0 rgba(0,0,0,0));
+  transition:filter 220ms ease,transform 220ms cubic-bezier(.22,1,.36,1);
+}
+.keyhot img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none}
+.keyhot:hover,.keyhot:focus-visible{
+  filter:brightness(1.22) contrast(1.05) saturate(1.2) drop-shadow(0 18px 30px rgba(10,10,10,.4)) drop-shadow(0 0 14px rgba(10,10,10,.18));
+  transform:scale(1.065);
+  outline:none;
+}
+.card{
+  background:var(--card);color:var(--ink);border:1px solid var(--line);text-align:left;
+  border-radius:var(--radius-sm);padding:20px 18px 16px;cursor:pointer;position:relative;
+  overflow:hidden;box-shadow:var(--shadow);
+  transition:transform 200ms cubic-bezier(0.22,1,0.36,1),box-shadow 200ms cubic-bezier(0.22,1,0.36,1);
+  font-family:var(--mono);
+}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.card svg{width:36px;height:36px;display:block;margin-bottom:14px;color:var(--muted)}
+.card:hover svg{color:var(--ink)}
+.card-photo{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;margin-bottom:12px;transition:transform 200ms cubic-bezier(0.22,1,0.36,1)}
+.card:hover .card-photo{transform:scale(1.04)}
+.card .lab{font-weight:600;font-size:15px;letter-spacing:-0.01em;line-height:1.25}
+.two .card .lab{font-size:18px}
+.card .idx{position:absolute;top:14px;right:15px;font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+/* Photo-row questions (drinks/transport/vinyls-style): options are bare
+   photos floating directly on the page — no card box, all in a single
+   row so nothing sits "above" anything else. Never scrolls or wraps to
+   a second row — cards flex-shrink together so all of them (even 6)
+   always fit on screen at once, as large as the available width allows. */
+.opts.photo-row{
+  display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:flex-end;
+  gap:clamp(10px,2.2vw,32px);width:100%;padding:8px 4px 16px;
+}
+.card-float{
+  background:none;border:none;box-shadow:none;padding:0;cursor:pointer;text-align:center;
+  display:flex;flex-direction:column;align-items:center;position:relative;
+  flex:1 1 0;min-width:0;max-width:300px;font-family:var(--mono);
+  transition:transform 200ms cubic-bezier(0.22,1,0.36,1);
+}
+.card-float:hover{transform:translateY(-6px);z-index:5}
+
+/* Dense mode (6-option rows: drinks, vinyls) — near-zero gap plus a
+   negative-margin overlap between neighbors, safe because every photo's
+   background has already been stripped to real transparency. Trades
+   tidy spacing for noticeably bigger art on a row this crowded. */
+.opts.photo-row.dense{gap:0}
+.opts.photo-row.dense .card-float{
+  max-width:340px;margin-left:clamp(-44px,-4.5vw,-18px);
+}
+.opts.photo-row.dense .card-float:first-child{margin-left:0}
+.card-float:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:8px}
+.card-float .card-photo{
+  width:100%;aspect-ratio:1/1;object-fit:contain;
+  filter:drop-shadow(0 14px 20px rgba(10,10,10,.14));
+  transition:transform 200ms cubic-bezier(0.22,1,0.36,1),filter 200ms ease;
+}
+.card-float:hover .card-photo{transform:scale(1.06);filter:drop-shadow(0 20px 26px rgba(10,10,10,.20))}
+.card-float .deltas{justify-content:center;margin-top:8px}
+
+.deltas{margin-top:10px;font-family:var(--mono);font-size:10.5px;line-height:1.5;color:var(--muted);display:none;flex-wrap:wrap;gap:3px 9px}
+.deltas .up{color:var(--ink);font-weight:700} .deltas .dn{color:var(--muted);font-weight:700}
+
+.result{flex:1;display:flex;flex-direction:column;min-height:0}
+.verdict{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.city{
+  font-family:var(--disp);font-weight:300;font-size:clamp(42px,8.5vw,80px);
+  letter-spacing:-0.03em;line-height:0.98;margin:0 0 20px;color:var(--ink);
+}
+.city span{font-style:italic}
+/* City photos come from a growing library with no fixed dimensions —
+   portrait, landscape, whatever was sourced — so every one is force-
+   cropped to the same centered square via object-fit:cover, applied
+   AFTER the white-background strip (see cityDetailHTML/animateCityPhoto
+   in main.js: data-strip swaps the src to the bg-removed version first;
+   this crop then works on that result, not the raw file). */
+.city-photo{
+  width:min(90vw,720px);aspect-ratio:1/1;margin:0 auto 32px;
+  overflow:hidden;
+}
+.city-photo img{
+  display:block;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  border-radius:0;box-shadow:none;
+}
+.bio{font-size:18px;line-height:1.55;max-width:64ch;margin:0 0 10px;color:var(--ink)}
+.tie{color:var(--muted);font-size:13px;margin:0 0 40px;max-width:64ch;line-height:1.5} .tie b{color:var(--ink)}
+
+/* Top matches (%) and Where you landed sit side by side once there's
+   room, so the results page uses the wider page instead of one narrow
+   centered column. */
+.result-panels{display:grid;grid-template-columns:1fr;gap:44px;width:100%;max-width:900px;margin:0 0 36px;text-align:left}
+@media(min-width:860px){.result-panels{grid-template-columns:1fr 1fr;gap:64px}}
+
+.blend-col h4,
+.scores h4{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.blend-hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:0 0 18px}
+.score-legend{display:flex;gap:18px;margin:0 0 22px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.score-legend .lg{display:flex;align-items:center;gap:7px}
+.score-legend .lg::before{content:"";width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.score-legend .lg.you::before{background:var(--ink)}
+.score-legend .lg.legend-city::before{background:var(--card);border:2px solid var(--muted);width:5px;height:5px}
+.score-legend .lg.legend-city{color:var(--ink);font-weight:600}
+
+.blend{display:grid;gap:6px}
+.brow{
+  display:grid;grid-template-columns:112px 1fr 46px 18px;align-items:center;gap:12px;
+  cursor:pointer;padding:10px 12px;margin:-2px -12px;border-radius:12px;width:calc(100% + 24px);
+  background:none;border:1px solid transparent;font-family:inherit;text-align:left;
+  transition:background 160ms ease,border-color 160ms ease,transform 160ms cubic-bezier(.22,1,.36,1),box-shadow 160ms ease;
+}
+.brow:hover{background:var(--card);border-color:var(--line);box-shadow:var(--shadow);transform:translateX(2px)}
+.brow:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.brow.active{background:var(--paper);border-color:var(--line)}
+.brow.active .bn{color:var(--ink)}
+.brow .bn{font-weight:600;font-size:14px;letter-spacing:-0.01em;color:var(--muted);transition:color 160ms ease}
+.brow.active .bn,.brow:hover .bn{color:var(--ink)}
+.brow .bt{height:10px;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.brow .bf{height:100%;border-radius:6px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.brow .bp{font-family:var(--mono);font-size:12px;font-weight:600;text-align:right;color:var(--ink)}
+.brow .barrow{
+  font-size:14px;color:var(--muted);opacity:0;transform:translateX(-4px);
+  transition:opacity 160ms ease,transform 160ms cubic-bezier(.22,1,.36,1);
+}
+.brow.active .barrow,.brow:hover .barrow,.brow:focus-visible .barrow{opacity:1;transform:none;color:var(--ink)}
+
+@media(max-width:859px){.scores{border-top:1px solid var(--line);padding-top:28px}}
+.srow{margin-bottom:18px}
+.shead{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:8px}
+.shead .nm{font-weight:600;letter-spacing:-0.01em;font-size:14px;color:var(--ink)}
+.shead .bd{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+.stk{height:5px;background:var(--paper);border:1px solid var(--line);border-radius:6px;position:relative}
+.stk::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line)}
+.sdot{position:absolute;top:50%;border-radius:50%;transform:translate(-50%,-50%);transition:left .7s cubic-bezier(.2,.8,.2,1)}
+.sdot.you{width:12px;height:12px;background:var(--ink);box-shadow:0 0 0 3px rgba(10,10,10,.08);z-index:2}
+.sdot.citymark{width:12px;height:12px;background:var(--card);border:2.5px solid var(--muted);z-index:1}
+.spoles{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:6px;letter-spacing:0.02em}
+
+.again{
+  background:var(--ink);color:#fff;border:none;font-weight:600;font-family:var(--mono);
+  font-size:14px;padding:14px 24px;border-radius:var(--radius-sm);cursor:pointer;
+  transition:background 160ms ease;
+}
+.again:hover{background:#2a2a2a}
+
+@media(max-width:540px){
+  :root{ --pad:20px; --radius:18px; }
+}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
