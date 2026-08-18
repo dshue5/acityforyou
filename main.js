@@ -54,7 +54,28 @@ function stripWhiteBg(src){
         stack.push(x+1,y,x-1,y,x,y+1,x,y-1);
       }
       ctx.putImageData(data,0,0);
-      canvas.toBlob(blob=>resolve(URL.createObjectURL(blob)),"image/png");
+      /* Source exports are often a square canvas with the item sitting in
+         a fraction of it (a ring or perfume bottle on a 2000x2000 sheet).
+         Once the background's transparent, crop to the opaque content's
+         own bounding box (plus a small margin) so the item fills its card
+         instead of floating small in a mostly-empty square. */
+      let minX=w,minY=h,maxX=-1,maxY=-1;
+      for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+        if(px[(y*w+x)*4+3]>10){
+          if(x<minX)minX=x; if(x>maxX)maxX=x;
+          if(y<minY)minY=y; if(y>maxY)maxY=y;
+        }
+      }
+      let out=canvas;
+      if(maxX>minX&&maxY>minY){
+        const pad=Math.round(Math.max(maxX-minX,maxY-minY)*0.04);
+        const cx0=Math.max(0,minX-pad),cy0=Math.max(0,minY-pad);
+        const cx1=Math.min(w,maxX+1+pad),cy1=Math.min(h,maxY+1+pad);
+        const cw=cx1-cx0,ch=cy1-cy0;
+        out=document.createElement("canvas");out.width=cw;out.height=ch;
+        out.getContext("2d").drawImage(canvas,cx0,cy0,cw,ch,0,0,cw,ch);
+      }
+      out.toBlob(blob=>resolve(URL.createObjectURL(blob)),"image/png");
     };
     img.onerror=()=>resolve(src);
     img.src=src;
@@ -133,7 +154,7 @@ function render(){
   if(isPhotoRow)shuffle(f.opts);
   mobileSelected=null;
   const answers=f.img?renderArt(f):isPhotoRow
-    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="${optClick(i)}" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
+    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}${f.snug?' snug':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="${optClick(i)}" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
     :`<div class="opts ${f.cols||''}">${f.opts.map((o,i)=>`<button class="card" onclick="${optClick(i)}"><span class="idx">0${i+1}</span>${G[o.k]}<span class="lab">${o.lab}</span><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`;
   const submitBtn=isTouch?`<button class="mobile-submit" id="mobileSubmit" onclick="mobileSubmit()" disabled>Submit</button>`:"";
   app.innerHTML=`<div class="stage">

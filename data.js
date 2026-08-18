@@ -135,7 +135,7 @@ const FAMILIES=[
    {k:"espresso",lab:"Black coffee, no sugar",v:{tempo:2,warmth:-1,indulgence:-1},img:"art/drinks/8.png"},
    {k:"mezcal",lab:"Whisky, neat",v:{tempo:1,indulgence:1,warmth:-1,era:-1},img:"art/drinks/6.png"},
  ]},
- {q:"Day, or <em>night</em>?",opts:[
+ {q:"Day, or <em>night</em>?",snug:true,opts:[
    {k:"daylight",lab:"Daylight",v:{warmth:1,order:1,elements:1,tempo:-1},img:"art/sun.png"},
    {k:"afterdark",lab:"After dark",v:{indulgence:1,tempo:1,warmth:-1,era:1},img:"art/moon.png"},
  ]},
@@ -159,7 +159,7 @@ const FAMILIES=[
    {k:"synth",lab:"Pet Shop Boys",v:{era:2,tempo:1,warmth:1},img:"art/vinyls/24.png"},
    {k:"sade",lab:"Sade",v:{warmth:2,indulgence:1,tempo:-1},img:"art/vinyls/25.png"},
  ]},
- {q:"<em>Pick</em> a souvenir.",opts:[
+ {q:"<em>Pick</em> a souvenir.",snug:true,opts:[
    {k:"pastel",lab:"Postcard",v:{warmth:1,era:-2,scale:-1},img:"art/souvenirs/35.png"},
    {k:"mono",lab:"Matchbook",v:{warmth:-2,order:1,indulgence:-1},img:"art/souvenirs/34.png"},
    {k:"jewel",lab:"Ring",v:{warmth:2,indulgence:1,order:-1},img:"art/souvenirs/32.png"},
@@ -177,13 +177,13 @@ const FAMILIES=[
    {k:"sea",lab:"Turtle",v:{elements:2,scale:-1,tempo:-1},hot:"67.8% 51.3%, 70.8% 51.3%, 72.3% 54.3%, 69.8% 60.3%, 65.8% 63.3%, 68.5% 64.0%, 70.8% 69.3%, 70.8% 75.3%, 68.8% 80.1%, 67.3% 80.1%, 65.0% 67.4%, 62.3% 72.3%, 56.8% 76.0%, 53.0% 85.4%, 47.0% 92.5%, 45.0% 91.8%, 50.0% 77.9%, 45.0% 77.5%, 39.5% 84.6%, 42.3% 77.2%, 41.3% 76.0%, 48.5% 62.2%, 58.0% 55.8%, 62.5% 57.3%, 67.8% 51.3%"},
    {k:"mountain",lab:"Goat",v:{elements:2,tempo:-1,warmth:-1},hot:"83.5% 25.5%, 90.5% 31.8%, 88.3% 27.0%, 90.5% 26.6%, 93.5% 35.2%, 95.8% 35.2%, 94.0% 38.6%, 96.0% 43.4%, 94.0% 52.1%, 91.3% 48.7%, 90.3% 50.2%, 92.5% 59.9%, 89.5% 79.8%, 91.3% 92.1%, 87.8% 90.6%, 86.5% 74.2%, 85.0% 79.0%, 86.5% 90.6%, 82.0% 92.5%, 82.5% 83.1%, 80.3% 74.9%, 81.0% 89.5%, 78.8% 91.0%, 78.8% 76.4%, 75.3% 65.9%, 76.5% 52.1%, 80.8% 45.7%, 83.5% 45.3%, 86.0% 37.8%, 84.0% 32.2%, 88.3% 33.7%, 83.3% 27.7%, 78.0% 30.3%, 83.5% 25.5%"},
  ]},
- {q:"<em>Pick</em> a card.",opts:[
+ {q:"<em>Pick</em> a card.",snug:true,opts:[
    {k:"market",lab:"Chaotic night market",v:{order:-2,warmth:1,tempo:1},img:"art/tarots/16.png"},
    {k:"sauna",lab:"Sauna and silence",v:{order:2,warmth:-1,indulgence:-1},img:"art/tarots/17.png"},
    {k:"lunch",lab:"Long dinner, no rush",v:{tempo:-2,indulgence:1,warmth:1},img:"art/tarots/19.png"},
    {k:"night",lab:"Out till sunrise",v:{tempo:2,indulgence:1,era:1},img:"art/tarots/18.png"},
  ]},
- {q:"<em>Smell</em> one.",opts:[
+ {q:"<em>Smell</em> one.",snug:true,opts:[
    {k:"smoke",lab:"Woodsmoke",v:{era:-1,indulgence:1,warmth:1,order:-1},img:"art/smell_3.png"},
    {k:"seasalt",lab:"Sea salt",v:{elements:2,warmth:-1,scale:-1},img:"art/smell_2.png"},
    {k:"leather",lab:"Leather & ink",v:{order:1,era:-1,indulgence:1,warmth:-1},img:"art/smell_1.png"},
