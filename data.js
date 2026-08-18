@@ -19,10 +19,10 @@ const CITIES={
  "Vancouver":[-1,2,1,1,1,1,3],
  "Kyoto":[-2,2,-3,-1,-1,0,1],"Beirut":[2,-3,-1,2,1,3,0],
  "Hong Kong":[3,1,2,0,3,2,0],"Miami":[1,-1,1,3,1,3,1],"Chiang Mai":[-2,-2,-2,2,-2,0,3],
- "Bogotá":[0,-2,-1,1,1,1,3],"Cairo":[2,-3,-2,1,3,1,-1],"Kathmandu":[-1,-3,-3,2,-1,0,3],
+ "Bogotá":[0,-2,-1,1,1,1,3],"Cairo":[2,-3,-2,1,3,1,-1],
  "Athens":[0,-2,-3,0,2,0,1],"Zurich":[-1,3,1,-2,0,-2,1]};
 // fairness offsets — learned so every city is ~equally reachable (1.5%–6% across random runs)
-const BIAS={"Los Angeles":-0.7,"New York":0.4,"Istanbul":3.7,"Rio de Janeiro":1.7,"Mexico City":2.4,"Singapore":-4.8,"Shanghai":2.1,"London":-4.9,"Copenhagen":-1.8,"Paris":-4.3,"Berlin":-6.7,"Marrakech":1.0,"Sydney":-0.8,"Mumbai":6.3,"Amsterdam":-2.8,"Tokyo":0.9,"Stockholm":-2.2,"Madrid":-0.8,"Barcelona":-3.1,"Lisbon":-1.1,"Dubai":-1.6,"Buenos Aires":-0.3,"Seoul":3.4,"Bangkok":3.2,"Naples":3.5,"Vienna":-5.2,"Cape Town":0.2,"Reykjavík":-0.8,"Vancouver":-2.8,"Kyoto":-0.8,"Beirut":3.5,"Hong Kong":-1.7,"Miami":0.3,"Chiang Mai":1.1,"Cairo":5.7,"Kathmandu":4.0,"Athens":4.6,"Bogotá":1.7,"Zurich":-2.2};
+const BIAS={"Los Angeles":-0.7,"New York":0.4,"Istanbul":3.7,"Rio de Janeiro":1.7,"Mexico City":2.4,"Singapore":-4.8,"Shanghai":2.1,"London":-4.9,"Copenhagen":-1.8,"Paris":-4.3,"Berlin":-6.7,"Marrakech":1.0,"Sydney":-0.8,"Mumbai":6.3,"Amsterdam":-2.8,"Tokyo":0.9,"Stockholm":-2.2,"Madrid":-0.8,"Barcelona":-3.1,"Lisbon":-1.1,"Dubai":-1.6,"Buenos Aires":-0.3,"Seoul":3.4,"Bangkok":3.2,"Naples":3.5,"Vienna":-5.2,"Cape Town":0.2,"Reykjavík":-0.8,"Vancouver":-2.8,"Kyoto":-0.8,"Beirut":3.5,"Hong Kong":-1.7,"Miami":0.3,"Chiang Mai":1.1,"Cairo":5.7,"Athens":4.6,"Bogotá":1.7,"Zurich":-2.2};
 const BIO={
  "Los Angeles":"Sprawling and sun-bleached. Life runs on cars, side projects, and the industry orbit \u2014 everyone half in film, music, or wellness.",
  "New York":"Vertical and fast. People live small and public, out constantly, eating and working at all hours.",
@@ -60,7 +60,6 @@ const BIO={
  "Chiang Mai":"Slow and green. Life runs cheap and unhurried \u2014 markets, caf\u00e9s, a drift of remote workers and monks alike.",
  "Bogot\u00e1":"High and green. Gritty and creative: caf\u00e9s, car-free Sundays on bikes, a city rebuilding its name.",
  "Cairo":"Vast and ancient. Twenty-odd million people, tea houses and gridlock, life loud and improvised.",
- "Kathmandu":"Sacred and chaotic. Life mixes the devotional and the ramshackle \u2014 shrines, trekkers, power cuts, momos.",
  "Athens":"Ancient and sun-worn. Gritty and unpolished: late nights, strikes, souvlaki, island ferries out of Piraeus.",
  "Zurich":"Quiet and exact. Life is discreet money, lake swims, punctual trams, and luxury that refuses to show off."};
 
