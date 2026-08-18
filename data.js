@@ -135,7 +135,7 @@ const FAMILIES=[
    {k:"espresso",lab:"Black coffee, no sugar",v:{tempo:2,warmth:-1,indulgence:-1},img:"art/drinks/8.png"},
    {k:"mezcal",lab:"Whisky, neat",v:{tempo:1,indulgence:1,warmth:-1,era:-1},img:"art/drinks/6.png"},
  ]},
- {q:"Day, or <em>night</em>?",snug:true,opts:[
+ {q:"Day, or <em>night</em>?",snug:true,fixedOrder:true,opts:[
    {k:"daylight",lab:"Daylight",v:{warmth:1,order:1,elements:1,tempo:-1},img:"art/sun.png"},
    {k:"afterdark",lab:"After dark",v:{indulgence:1,tempo:1,warmth:-1,era:1},img:"art/moon.png"},
  ]},
@@ -162,7 +162,7 @@ const FAMILIES=[
  {q:"<em>Pick</em> a souvenir.",snug:true,opts:[
    {k:"pastel",lab:"Postcard",v:{warmth:1,era:-2,scale:-1},img:"art/souvenirs/35.png"},
    {k:"mono",lab:"Matchbook",v:{warmth:-2,order:1,indulgence:-1},img:"art/souvenirs/34.png"},
-   {k:"jewel",lab:"Ring",v:{warmth:2,indulgence:1,order:-1},img:"art/souvenirs/32.png"},
+   {k:"jewel",lab:"Ring",v:{warmth:2,indulgence:1,order:-1},img:"art/souvenirs/32.png",scale:0.68},
    {k:"glow",lab:"Card",v:{era:2,warmth:-1,scale:1},img:"art/souvenirs/33.png"},
  ]},
  {q:"<em>Choose</em> a key.",img:"art/keys.png",opts:[

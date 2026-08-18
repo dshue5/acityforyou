@@ -158,10 +158,10 @@ function render(){
   if(!started){renderIntro();return;}
   const f=FAMILIES[step];
   const isPhotoRow=!f.img&&f.opts.every(o=>o.img);
-  if(isPhotoRow)shuffle(f.opts);
+  if(isPhotoRow&&!f.fixedOrder)shuffle(f.opts);
   mobileSelected=null;
   const answers=f.img?renderArt(f):isPhotoRow
-    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}${f.snug?' snug':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="${optClick(i)}" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" data-crop="${f.snug?1:0}" src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
+    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}${f.snug?' snug':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="${optClick(i)}" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" data-crop="${f.snug?1:0}"${o.scale?` style="zoom:${o.scale}"`:""} src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
     :`<div class="opts ${f.cols||''}">${f.opts.map((o,i)=>`<button class="card" onclick="${optClick(i)}"><span class="idx">0${i+1}</span>${G[o.k]}<span class="lab">${o.lab}</span><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`;
   const submitBtn=isTouch?`<button class="mobile-submit" id="mobileSubmit" onclick="mobileSubmit()" disabled>Submit</button>`:"";
   app.innerHTML=`<div class="stage">
@@ -355,10 +355,19 @@ render();
     });
     setTimeout(finish,1100);
   }
+  let shown=false;
   names.forEach(name=>{
     const src=`Cities/${cityFile(name)}.webp`;
     const probe=new Image();
-    probe.onload=()=>{pool.push(src);probeDone();};
+    probe.onload=()=>{
+      pool.push(src);
+      /* Show the first confirmed-loaded photo immediately instead of
+         leaving the image slot blank while the remaining ~30 probes are
+         still in flight — it's already decoded (that's why onload fired),
+         so this paints instantly with no flash. */
+      if(!shown){shown=true;imgEl.src=src;}
+      probeDone();
+    };
     probe.onerror=probeDone;
     probe.src=src;
   });
