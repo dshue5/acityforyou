@@ -28,8 +28,9 @@ function shuffleQuestions(){
    pixels only (not a global threshold), so it can't eat interior whites
    like album-cover text or matcha foam that never touch the border. */
 const __bgCache=new Map();
-function stripWhiteBg(src){
-  if(__bgCache.has(src)) return __bgCache.get(src);
+function stripWhiteBg(src,crop){
+  const key=src+(crop?"|crop":"");
+  if(__bgCache.has(key)) return __bgCache.get(key);
   const p=new Promise(resolve=>{
     const img=new Image();
     img.onload=()=>{
@@ -58,34 +59,40 @@ function stripWhiteBg(src){
          a fraction of it (a ring or perfume bottle on a 2000x2000 sheet).
          Once the background's transparent, crop to the opaque content's
          own bounding box (plus a small margin) so the item fills its card
-         instead of floating small in a mostly-empty square. */
-      let minX=w,minY=h,maxX=-1,maxY=-1;
-      for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-        if(px[(y*w+x)*4+3]>10){
-          if(x<minX)minX=x; if(x>maxX)maxX=x;
-          if(y<minY)minY=y; if(y>maxY)maxY=y;
-        }
-      }
+         instead of floating small in a mostly-empty square. Opt-in only
+         (see FAMILIES[].snug) — categories like drinks are already
+         consistently framed and shouldn't have each bottle re-cropped to
+         its own bounding box, which would skew their sizes relative to
+         each other. */
       let out=canvas;
-      if(maxX>minX&&maxY>minY){
-        const pad=Math.round(Math.max(maxX-minX,maxY-minY)*0.04);
-        const cx0=Math.max(0,minX-pad),cy0=Math.max(0,minY-pad);
-        const cx1=Math.min(w,maxX+1+pad),cy1=Math.min(h,maxY+1+pad);
-        const cw=cx1-cx0,ch=cy1-cy0;
-        out=document.createElement("canvas");out.width=cw;out.height=ch;
-        out.getContext("2d").drawImage(canvas,cx0,cy0,cw,ch,0,0,cw,ch);
+      if(crop){
+        let minX=w,minY=h,maxX=-1,maxY=-1;
+        for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+          if(px[(y*w+x)*4+3]>10){
+            if(x<minX)minX=x; if(x>maxX)maxX=x;
+            if(y<minY)minY=y; if(y>maxY)maxY=y;
+          }
+        }
+        if(maxX>minX&&maxY>minY){
+          const pad=Math.round(Math.max(maxX-minX,maxY-minY)*0.04);
+          const cx0=Math.max(0,minX-pad),cy0=Math.max(0,minY-pad);
+          const cx1=Math.min(w,maxX+1+pad),cy1=Math.min(h,maxY+1+pad);
+          const cw=cx1-cx0,ch=cy1-cy0;
+          out=document.createElement("canvas");out.width=cw;out.height=ch;
+          out.getContext("2d").drawImage(canvas,cx0,cy0,cw,ch,0,0,cw,ch);
+        }
       }
       out.toBlob(blob=>resolve(URL.createObjectURL(blob)),"image/png");
     };
     img.onerror=()=>resolve(src);
     img.src=src;
   });
-  __bgCache.set(src,p);
+  __bgCache.set(key,p);
   return p;
 }
 function applyBgStrip(){
   document.querySelectorAll("img[data-strip]").forEach(async el=>{
-    el.src=await stripWhiteBg(el.getAttribute("data-strip"));
+    el.src=await stripWhiteBg(el.getAttribute("data-strip"),el.dataset.crop==="1");
   });
 }
 /* Every quiz-art asset (hotspot composites + photo-row options) gets its
@@ -97,12 +104,12 @@ function applyBgStrip(){
    this costs nothing later: by the time a question is reached its art is
    already processed and applyBgStrip() just resolves instantly. */
 function preloadAllArt(){
-  const srcs=new Set();
+  const srcs=new Map();
   FAMILIES.forEach(f=>{
-    if(f.img)srcs.add(f.img);
-    f.opts.forEach(o=>{if(o.img)srcs.add(o.img);});
+    if(f.img)srcs.set(f.img,false);
+    f.opts.forEach(o=>{if(o.img)srcs.set(o.img,!!f.snug);});
   });
-  srcs.forEach(src=>stripWhiteBg(src));
+  srcs.forEach((crop,src)=>stripWhiteBg(src,crop));
 }
 preloadAllArt();
 /* Splits question HTML into words, each wrapped for a staggered cascade-in
@@ -154,7 +161,7 @@ function render(){
   if(isPhotoRow)shuffle(f.opts);
   mobileSelected=null;
   const answers=f.img?renderArt(f):isPhotoRow
-    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}${f.snug?' snug':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="${optClick(i)}" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
+    ?`<div class="opts photo-row${f.opts.length>=6?' dense':''}${f.snug?' snug':''}">${f.opts.map((o,i)=>`<button class="card-float" onclick="${optClick(i)}" aria-label="${o.lab}"><img class="card-photo" data-strip="${o.img}" data-crop="${f.snug?1:0}" src="${o.img}" alt="" draggable="false"><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`
     :`<div class="opts ${f.cols||''}">${f.opts.map((o,i)=>`<button class="card" onclick="${optClick(i)}"><span class="idx">0${i+1}</span>${G[o.k]}<span class="lab">${o.lab}</span><span class="deltas">${deltaHTML(o.v)}</span></button>`).join("")}</div>`;
   const submitBtn=isTouch?`<button class="mobile-submit" id="mobileSubmit" onclick="mobileSubmit()" disabled>Submit</button>`:"";
   app.innerHTML=`<div class="stage">

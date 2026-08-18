@@ -211,13 +211,18 @@ body{
 
 /* Snug mode (souvenirs, day/night, tarot, scents): these source photos are
    tall/narrow items on a square canvas, so the usual square card-photo
-   box leaves them small and far apart. Size by height instead of forcing
-   a square, and pull the row tight, so each item reads big and close —
+   box leaves them small and far apart. Each image is pre-cropped to its
+   own content (see stripWhiteBg's crop option) at a shared source scale,
+   so rendering at natural size — capped only so nothing runs oversized —
+   keeps a small item (a ring) small and a big item (a postcard) big,
+   proportional to the original photo, rather than stretching everything
+   to one uniform height. Pull the row tight so items read close together,
    closer to how they looked as one shared composite image. */
 .opts.photo-row.snug{gap:clamp(2px,1vw,18px)}
 .opts.photo-row.snug .card-float{flex:0 0 auto;max-width:none}
 .opts.photo-row.snug .card-photo{
-  aspect-ratio:auto;width:auto;height:clamp(200px,38vh,420px);max-width:100%;
+  aspect-ratio:auto;width:auto;height:auto;
+  max-height:clamp(180px,34vh,380px);max-width:min(100%,320px);
 }
 .card-float:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:8px}
 .card-float .card-photo{
