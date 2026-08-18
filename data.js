@@ -135,9 +135,9 @@ const FAMILIES=[
    {k:"espresso",lab:"Black coffee, no sugar",v:{tempo:2,warmth:-1,indulgence:-1},img:"art/drinks/8.png"},
    {k:"mezcal",lab:"Whisky, neat",v:{tempo:1,indulgence:1,warmth:-1,era:-1},img:"art/drinks/6.png"},
  ]},
- {q:"Day, or <em>night</em>?",img:"art/day-night.png",opts:[
-   {k:"daylight",lab:"Daylight",v:{warmth:1,order:1,elements:1,tempo:-1},hot:"28% 10%, 48% 14%, 55% 40%, 52% 70%, 42% 88%, 22% 88%, 8% 55%, 10% 25%"},
-   {k:"afterdark",lab:"After dark",v:{indulgence:1,tempo:1,warmth:-1,era:1},hot:"72% 15%, 92% 22%, 98% 45%, 95% 75%, 85% 90%, 68% 88%, 60% 55%, 63% 25%"},
+ {q:"Day, or <em>night</em>?",opts:[
+   {k:"daylight",lab:"Daylight",v:{warmth:1,order:1,elements:1,tempo:-1},img:"art/sun.png"},
+   {k:"afterdark",lab:"After dark",v:{indulgence:1,tempo:1,warmth:-1,era:1},img:"art/moon.png"},
  ]},
  {q:"Something's arriving to <em>take</em> you.",opts:[
    {k:"vespa",lab:"Vespa",v:{warmth:1,era:-1,order:-2},img:"art/transport/1.png"},
@@ -146,24 +146,24 @@ const FAMILIES=[
    {k:"ferry",lab:"Ferry across the bay",v:{elements:2,tempo:-1,scale:1},img:"art/transport/4.png"},
  ]},
  {q:"<em>Look</em> at one.",opts:[
-   {k:"marble",lab:"The Wedding at Cana",v:{scale:2,order:1,warmth:-1},img:"paintings/painting_grand.png"},
-   {k:"candle",lab:"Girl with a Pearl Earring",v:{scale:-2,warmth:2},img:"paintings/painting_nook.png"},
-   {k:"gallery",lab:"Black on Maroon",v:{order:1,era:1,warmth:-1,indulgence:-1},img:"paintings/painting_glassstudio.png"},
-   {k:"loft",lab:"The Open Window, Collioure",v:{order:-1,era:-2,warmth:1},img:"paintings/painting_bohemian.png"},
+   {k:"marble",lab:"The Wedding at Cana",v:{scale:2,order:1,warmth:-1},img:"art/art/28.png"},
+   {k:"candle",lab:"Girl with a Pearl Earring",v:{scale:-2,warmth:2},img:"art/art/30.png"},
+   {k:"gallery",lab:"Black on Maroon",v:{order:1,era:1,warmth:-1,indulgence:-1},img:"art/art/31.png"},
+   {k:"loft",lab:"The Open Window, Collioure",v:{order:-1,era:-2,warmth:1},img:"art/art/29.png"},
  ]},
  {q:"Turn <em>one</em> on.",cols:"six",opts:[
-   {k:"vinyl",lab:"John Coltrane",v:{era:-2,tempo:-1,warmth:1},img:"art/vinyls/16.png"},
-   {k:"orchestra",lab:"Andrea Bocelli",v:{order:1,scale:2,era:-1},img:"art/vinyls/20.png"},
-   {k:"techno",lab:"Aphex Twin",v:{tempo:1,indulgence:1,warmth:-1,order:-1},img:"art/vinyls/15.png"},
-   {k:"djset",lab:"KAYTRANADA",v:{warmth:1,indulgence:1,tempo:1,order:-1},img:"art/vinyls/19.png"},
-   {k:"synth",lab:"Pet Shop Boys",v:{era:2,tempo:1,warmth:1},img:"art/vinyls/17.png"},
-   {k:"sade",lab:"Sade",v:{warmth:2,indulgence:1,tempo:-1},img:"art/vinyls/18.png"},
+   {k:"vinyl",lab:"John Coltrane",v:{era:-2,tempo:-1,warmth:1},img:"art/vinyls/23.png"},
+   {k:"orchestra",lab:"Andrea Bocelli",v:{order:1,scale:2,era:-1},img:"art/vinyls/27.png"},
+   {k:"techno",lab:"Aphex Twin",v:{tempo:1,indulgence:1,warmth:-1,order:-1},img:"art/vinyls/22.png"},
+   {k:"djset",lab:"KAYTRANADA",v:{warmth:1,indulgence:1,tempo:1,order:-1},img:"art/vinyls/26.png"},
+   {k:"synth",lab:"Pet Shop Boys",v:{era:2,tempo:1,warmth:1},img:"art/vinyls/24.png"},
+   {k:"sade",lab:"Sade",v:{warmth:2,indulgence:1,tempo:-1},img:"art/vinyls/25.png"},
  ]},
- {q:"<em>Pick</em> a souvenir.",img:"art/souvenirs.webp",opts:[
-   {k:"pastel",lab:"Postcard",v:{warmth:1,era:-2,scale:-1},hot:"4.8% 18.7%, 30.0% 20.2%, 30.5% 69.7%, 29.8% 81.6%, 4.5% 81.6%, 3.8% 80.5%, 3.8% 25.1%, 4.8% 18.7%"},
-   {k:"mono",lab:"Matchbook",v:{warmth:-2,order:1,indulgence:-1},hot:"34.5% 19.5%, 52.5% 19.5%, 53.8% 21.3%, 54.8% 62.5%, 53.3% 82.4%, 34.8% 81.6%, 34.0% 80.5%, 34.5% 19.5%"},
-   {k:"jewel",lab:"Ring",v:{warmth:2,indulgence:1,order:-1},hot:"60.3% 42.7%, 63.2% 42.7%, 65.3% 45.3%, 68.5% 53.6%, 68.0% 62.5%, 64.5% 67.0%, 59.5% 66.3%, 56.3% 59.6%, 57.0% 48.7%, 60.3% 42.7%"},
-   {k:"glow",lab:"Card",v:{era:2,warmth:-1,scale:1},hot:"72.3% 21.0%, 96.0% 21.7%, 96.8% 27.3%, 96.8% 79.4%, 96.0% 81.3%, 72.0% 81.3%, 71.0% 79.8%, 71.3% 22.8%, 72.3% 21.0%"},
+ {q:"<em>Pick</em> a souvenir.",opts:[
+   {k:"pastel",lab:"Postcard",v:{warmth:1,era:-2,scale:-1},img:"art/souvenirs/35.png"},
+   {k:"mono",lab:"Matchbook",v:{warmth:-2,order:1,indulgence:-1},img:"art/souvenirs/34.png"},
+   {k:"jewel",lab:"Ring",v:{warmth:2,indulgence:1,order:-1},img:"art/souvenirs/32.png"},
+   {k:"glow",lab:"Card",v:{era:2,warmth:-1,scale:1},img:"art/souvenirs/33.png"},
  ]},
  {q:"<em>Choose</em> a key.",img:"art/keys.png",opts:[
    {k:"tower",lab:"Modern house",v:{era:1,scale:2,warmth:-1},hot:"37% 33%, 41% 39%, 36% 57%, 19% 65%, 13% 50%, 24% 36%"},
@@ -177,16 +177,16 @@ const FAMILIES=[
    {k:"sea",lab:"Turtle",v:{elements:2,scale:-1,tempo:-1},hot:"67.8% 51.3%, 70.8% 51.3%, 72.3% 54.3%, 69.8% 60.3%, 65.8% 63.3%, 68.5% 64.0%, 70.8% 69.3%, 70.8% 75.3%, 68.8% 80.1%, 67.3% 80.1%, 65.0% 67.4%, 62.3% 72.3%, 56.8% 76.0%, 53.0% 85.4%, 47.0% 92.5%, 45.0% 91.8%, 50.0% 77.9%, 45.0% 77.5%, 39.5% 84.6%, 42.3% 77.2%, 41.3% 76.0%, 48.5% 62.2%, 58.0% 55.8%, 62.5% 57.3%, 67.8% 51.3%"},
    {k:"mountain",lab:"Goat",v:{elements:2,tempo:-1,warmth:-1},hot:"83.5% 25.5%, 90.5% 31.8%, 88.3% 27.0%, 90.5% 26.6%, 93.5% 35.2%, 95.8% 35.2%, 94.0% 38.6%, 96.0% 43.4%, 94.0% 52.1%, 91.3% 48.7%, 90.3% 50.2%, 92.5% 59.9%, 89.5% 79.8%, 91.3% 92.1%, 87.8% 90.6%, 86.5% 74.2%, 85.0% 79.0%, 86.5% 90.6%, 82.0% 92.5%, 82.5% 83.1%, 80.3% 74.9%, 81.0% 89.5%, 78.8% 91.0%, 78.8% 76.4%, 75.3% 65.9%, 76.5% 52.1%, 80.8% 45.7%, 83.5% 45.3%, 86.0% 37.8%, 84.0% 32.2%, 88.3% 33.7%, 83.3% 27.7%, 78.0% 30.3%, 83.5% 25.5%"},
  ]},
- {q:"<em>Pick</em> a card.",img:"art/feastdancevigilbazaar.png",opts:[
-   {k:"market",lab:"Chaotic night market",v:{order:-2,warmth:1,tempo:1},hot:"78% 30%, 97% 30%, 99% 33%, 99% 75%, 97% 78%, 78% 78%, 76% 75%, 76% 33%"},
-   {k:"sauna",lab:"Sauna and silence",v:{order:2,warmth:-1,indulgence:-1},hot:"53% 30%, 72% 30%, 74% 33%, 74% 75%, 72% 78%, 53% 78%, 51% 75%, 51% 33%"},
-   {k:"lunch",lab:"Long dinner, no rush",v:{tempo:-2,indulgence:1,warmth:1},hot:"3% 30%, 22% 30%, 24% 33%, 24% 75%, 22% 78%, 3% 78%, 1% 75%, 1% 33%"},
-   {k:"night",lab:"Out till sunrise",v:{tempo:2,indulgence:1,era:1},hot:"28% 30%, 47% 30%, 49% 33%, 49% 75%, 47% 78%, 28% 78%, 26% 75%, 26% 33%"},
+ {q:"<em>Pick</em> a card.",opts:[
+   {k:"market",lab:"Chaotic night market",v:{order:-2,warmth:1,tempo:1},img:"art/tarots/16.png"},
+   {k:"sauna",lab:"Sauna and silence",v:{order:2,warmth:-1,indulgence:-1},img:"art/tarots/17.png"},
+   {k:"lunch",lab:"Long dinner, no rush",v:{tempo:-2,indulgence:1,warmth:1},img:"art/tarots/19.png"},
+   {k:"night",lab:"Out till sunrise",v:{tempo:2,indulgence:1,era:1},img:"art/tarots/18.png"},
  ]},
- {q:"<em>Smell</em> one.",img:"art/fragrance.png",opts:[
-   {k:"smoke",lab:"Woodsmoke",v:{era:-1,indulgence:1,warmth:1,order:-1},hot:"8% 30%, 22% 30%, 24% 33%, 24% 78%, 20% 82%, 10% 82%, 6% 78%, 6% 34%"},
-   {k:"seasalt",lab:"Sea salt",v:{elements:2,warmth:-1,scale:-1},hot:"30% 38%, 45% 38%, 48% 42%, 48% 78%, 44% 82%, 33% 82%, 29% 78%, 28% 45%"},
-   {k:"leather",lab:"Leather & ink",v:{order:1,era:-1,indulgence:1,warmth:-1},hot:"53% 32%, 70% 32%, 73% 36%, 73% 80%, 69% 84%, 56% 84%, 52% 80%, 52% 38%"},
-   {k:"petrichor",lab:"Cold rain",v:{elements:1,tempo:-2,warmth:-1},hot:"79% 36%, 94% 36%, 97% 42%, 97% 80%, 93% 84%, 82% 84%, 78% 80%, 78% 44%"},
+ {q:"<em>Smell</em> one.",opts:[
+   {k:"smoke",lab:"Woodsmoke",v:{era:-1,indulgence:1,warmth:1,order:-1},img:"art/smell_3.png"},
+   {k:"seasalt",lab:"Sea salt",v:{elements:2,warmth:-1,scale:-1},img:"art/smell_2.png"},
+   {k:"leather",lab:"Leather & ink",v:{order:1,era:-1,indulgence:1,warmth:-1},img:"art/smell_1.png"},
+   {k:"petrichor",lab:"Cold rain",v:{elements:1,tempo:-2,warmth:-1},img:"art/smell_4.png"},
  ]},
 ];
