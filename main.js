@@ -364,8 +364,10 @@ render();
       /* Show the first confirmed-loaded photo immediately instead of
          leaving the image slot blank while the remaining ~30 probes are
          still in flight — it's already decoded (that's why onload fired),
-         so this paints instantly with no flash. */
-      if(!shown){shown=true;imgEl.src=src;}
+         so this paints instantly with no flash. Until then, #loadImg's
+         own "pending" pulse (see style.css) covers the network gap
+         instead of a blank white square. */
+      if(!shown){shown=true;imgEl.classList.remove("pending");imgEl.src=src;}
       probeDone();
     };
     probe.onerror=probeDone;

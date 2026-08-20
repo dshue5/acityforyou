@@ -48,8 +48,13 @@ html,body{margin:0;height:100%}
 }
 #loadImg{
   width:min(56vw,420px);aspect-ratio:1/1;object-fit:cover;
-  display:block;
+  display:block;background:var(--paper);
 }
+/* Shown only until the first city photo actually resolves (see runLoader
+   in main.js) — a soft pulse instead of a blank white square for however
+   long that first network round-trip takes. */
+#loadImg.pending{animation:load-pulse 1.3s ease-in-out infinite}
+@keyframes load-pulse{0%,100%{opacity:1}50%{opacity:.5}}
 #loadBarWrap{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--line)}
 #loadBar{height:100%;width:0;background:var(--ink)}
 body{
