@@ -347,23 +347,49 @@ render();
 
 /* Opening loading screen — probes for whichever Cities/*.webp files
    actually exist (the library grows over time, so not all 33 are
-   guaranteed present), then steps through a handful of them at a slow,
-   constant pace before the last one slides into the .intro-photo square
-   above the title (see renderIntro) instead of just fading away. */
+   guaranteed present), then rapidly shuffles through them (fast, like the
+   original splash) before the last one shown slides into the
+   .intro-photo square above the title (see renderIntro). Once landed,
+   it keeps gently cycling through the rest of the pool at a much slower
+   pace instead of sitting frozen. */
 (function runLoader(){
   const overlay=document.getElementById("loadOverlay");
   const imgEl=document.getElementById("loadImg");
   const bar=document.getElementById("loadBar");
   const barWrap=document.getElementById("loadBarWrap");
   if(!overlay||!imgEl||!bar)return;
-  const STEP_MS=750,STEPS=4;
+  /* Slow, steady cycling on the intro screen itself, after the loader's
+     photo has landed in .intro-photo — crossfades to a new random pool
+     photo every ~1.8s. Stops once the quiz actually starts (renderIntro's
+     markup, including #introImg, gets replaced) or the pool is trivial. */
+  function ambientCycle(pool,current){
+    if(started)return;
+    const introImg=document.getElementById("introImg");
+    if(!introImg||pool.length<2){return;}
+    setTimeout(()=>{
+      if(started)return;
+      const candidates=pool.filter(s=>s!==current);
+      const next=candidates[Math.floor(Math.random()*candidates.length)];
+      const pre=new Image();
+      pre.onload=()=>{
+        if(started||!document.body.contains(introImg))return;
+        introImg.animate([{opacity:1},{opacity:0}],{duration:260,easing:"ease"}).onfinish=()=>{
+          introImg.src=next;
+          introImg.animate([{opacity:0},{opacity:1}],{duration:320,easing:"ease"});
+          ambientCycle(pool,next);
+        };
+      };
+      pre.onerror=()=>ambientCycle(pool,current);
+      pre.src=next;
+    },1800);
+  }
   /* FLIP: measure #loadImg where it's actually sitting (centered, fixed
      size), measure #introImg's real target slot (already laid out in the
      hidden intro underneath), then animate #loadImg's own box between
      those two rects while the overlay's background fades away — so the
      photo itself appears to travel from the loader into the page rather
      than the loader just disappearing and a second photo popping in. */
-  function finish(){
+  function finish(pool){
     const introImg=document.getElementById("introImg");
     if(!introImg||!imgEl.src){
       overlay.style.transition="opacity 420ms ease";
@@ -387,33 +413,37 @@ render();
       imgEl.style.left=landRect.left+"px";imgEl.style.top=landRect.top+"px";
       imgEl.style.width=landRect.width+"px";imgEl.style.height=landRect.height+"px";
     });
-    setTimeout(()=>{overlay.style.display="none";},650);
+    setTimeout(()=>{
+      overlay.style.display="none";
+      ambientCycle(pool,introImg.src.split("/").slice(-2).join("/"));
+    },650);
   }
   const pool=[];
   const names=Object.keys(CITIES);
   let remaining=names.length;
   function probeDone(){
     if(--remaining>0)return;
-    if(!pool.length){finish();return;}
+    if(!pool.length){finish(pool);return;}
     shuffle(pool);
     let idx=0;
-    function step(n){
+    const t0=Date.now();
+    /* Fast, accelerating shuffle — not gated behind requestAnimationFrame
+       (rAF only fires while the tab is visibly rendering; on a
+       backgrounded/occluded tab, easy to hit right after a refresh, it
+       can stall indefinitely while the independent finish() timeout
+       below fires anyway, freezing the photo). Runs on its own setTimeout
+       chain instead, which still fires — just throttled — in that case. */
+    function step(){
       imgEl.src=pool[idx++%pool.length];
-      if(n<STEPS-1)setTimeout(()=>step(n+1),STEP_MS);
+      const el=Date.now()-t0;
+      if(el<1100)setTimeout(step,el<500?60:el<900?150:300);
     }
-    /* step() must not depend on requestAnimationFrame — rAF only fires
-       while the tab is actually visible/rendering, so on a backgrounded
-       or occluded tab it can stall indefinitely, leaving the photo frozen
-       on whatever it last showed while the independent finish() timeout
-       below still fires on schedule. Run the shuffle via its own
-       setTimeout chain (throttled but never skipped in a background tab)
-       and keep rAF only for the purely cosmetic bar-width kickoff. */
-    step(0);
+    step();
     requestAnimationFrame(()=>{
-      bar.style.transition=`width ${STEP_MS*STEPS}ms linear`;
+      bar.style.transition="width 1.1s linear";
       bar.style.width="100%";
     });
-    setTimeout(finish,STEP_MS*STEPS);
+    setTimeout(()=>finish(pool),1100);
   }
   let shown=false;
   names.forEach(name=>{
