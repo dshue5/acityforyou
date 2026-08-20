@@ -394,17 +394,20 @@ render();
     const urls=await Promise.all(items.map(src=>stripWhiteBg(src,true)));
     /* One sprite per unique image (not a random pick per sprite) so the
        same object can never be visible twice at once — each item falls
-       on its own independent loop. Most items render near their real
-       relative size; paintings/vinyls are called-out set pieces that
-       read better bigger, and a small vehicle icon needs blowing up
-       further still to read at all. */
-    const sizeScale=src=>
-      src.startsWith("art/transport/")?3.1:
-      (src.startsWith("art/vinyls/")||src.startsWith("art/art/"))?1.9:1;
+       on its own independent loop. Vehicles and paintings are the big
+       set pieces, vinyls a step below that, and everything else (drinks,
+       souvenirs, tarot, scents, sun/moon) stays modest so it doesn't
+       compete with them. */
+    const sizeRange=src=>
+      src.startsWith("art/transport/")?[380,460]:
+      src.startsWith("art/art/")?[230,290]:
+      src.startsWith("art/vinyls/")?[280,340]:
+      [55,75];
     urls.forEach((url,i)=>{
       const el=document.createElement("img");
       el.src=url;el.alt="";el.className="rain-drop";
-      const size=(128+Math.random()*32)*sizeScale(items[i]);
+      const [lo,hi]=sizeRange(items[i]);
+      const size=lo+Math.random()*(hi-lo);
       el.style.width=size+"px";
       el.style.left=(25+Math.random()*50)+"%";
       const dur=7+Math.random()*7;
