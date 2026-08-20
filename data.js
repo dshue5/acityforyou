@@ -23,7 +23,10 @@ const CITIES={
  "Bogotá":[0,-2,-1,1,1,1,3],"Cairo":[2,-3,-2,1,3,1,-1],
  "Athens":[0,-2,-3,0,2,0,1],"Zurich":[-1,3,1,-2,0,-2,1]};
 // fairness offsets — learned so every city is ~equally reachable (1.5%–6% across random runs)
-const BIAS={"Los Angeles":-0.7,"New York":0.4,"Istanbul":3.7,"Rio de Janeiro":1.7,"Mexico City":2.4,"Singapore":-4.8,"Shanghai":2.1,"London":-4.9,"Copenhagen":-1.8,"Paris":-4.3,"Berlin":-6.7,"Marrakech":1.0,"Sydney":-0.8,"Mumbai":6.3,"Amsterdam":-2.8,"Tokyo":0.9,"Stockholm":-2.2,"Madrid":-0.8,"Barcelona":-3.1,"Lisbon":-1.1,"Dubai":-1.6,"Buenos Aires":-0.3,"Seoul":3.4,"Bangkok":3.2,"Naples":3.5,"Vienna":-5.2,"Cape Town":0.2,"Reykjavík":-0.8,"Vancouver":-2.8,"Kyoto":-0.8,"Beirut":3.5,"Hong Kong":-1.7,"Miami":0.3,"Cairo":5.7,"Athens":4.6,"Bogotá":1.7,"Zurich":-2.2,"Tulum":0,"Rome":0};
+// Recalibrated 2026-08-20 after the spirit-animal question's elements weights
+// changed (Raccoon -3->-2, Falcon -2->-1, Turtle +2->+1) — exhaustively
+// evaluated all 1,179,648 answer combos, not sampled. Result: 2.02%-2.94%.
+const BIAS={"Los Angeles":-1.41,"New York":4.59,"Istanbul":4.58,"Rio de Janeiro":2.59,"Mexico City":8.84,"Singapore":-8.05,"Shanghai":5.51,"London":-4.94,"Copenhagen":-5.05,"Paris":-2.84,"Berlin":-8.96,"Marrakech":-1.54,"Sydney":-3.63,"Mumbai":11.78,"Amsterdam":-5.73,"Tokyo":2.54,"Stockholm":-6.02,"Madrid":1.09,"Barcelona":-3.13,"Lisbon":-4.53,"Dubai":-3.43,"Buenos Aires":3.14,"Seoul":2.59,"Bangkok":6.81,"Naples":4.7,"Vienna":-7.97,"Cape Town":-0.59,"Reykjavík":-4,"Vancouver":-5.96,"Kyoto":-3.87,"Beirut":5.78,"Hong Kong":-4,"Miami":-0.06,"Cairo":10.91,"Athens":4.6,"Bogotá":1.57,"Zurich":-5.99,"Tulum":-3.51,"Rome":8.89};
 const BIO={
  "Los Angeles":"Sprawling and sun-bleached. Life runs on cars, side projects, and the industry orbit \u2014 everyone half in film, music, or wellness.",
  "New York":"Vertical and fast. People live small and public, out constantly, eating and working at all hours.",
