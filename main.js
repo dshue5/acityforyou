@@ -357,6 +357,7 @@ render();
   const imgEl=document.getElementById("loadImg");
   const bar=document.getElementById("loadBar");
   const barWrap=document.getElementById("loadBarWrap");
+  const spiral=document.getElementById("loadSpiral");
   if(!overlay||!imgEl||!bar)return;
   /* Slow, steady cycling on the intro screen itself, after the loader's
      photo has landed in .intro-photo — crossfades to a new random pool
@@ -410,6 +411,7 @@ render();
     introImg.src=imgEl.src;
     const landRect=introImg.getBoundingClientRect();
     if(barWrap){barWrap.style.transition="opacity 200ms ease";barWrap.style.opacity="0";}
+    if(spiral){spiral.style.opacity="0";}
     imgEl.style.position="fixed";imgEl.style.margin="0";
     imgEl.style.left=startRect.left+"px";imgEl.style.top=startRect.top+"px";
     imgEl.style.width=startRect.width+"px";imgEl.style.height=startRect.height+"px";

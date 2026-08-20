@@ -43,7 +43,7 @@ html,body{margin:0;height:100%}
    fading away. Sits above everything until that slide finishes. */
 #loadOverlay{
   position:fixed;inset:0;z-index:999;background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
 }
 #loadImg{
   width:min(56vw,420px);aspect-ratio:1/1;object-fit:cover;
@@ -54,6 +54,16 @@ html,body{margin:0;height:100%}
    long that first network round-trip takes. */
 #loadImg.pending{animation:load-pulse 1.3s ease-in-out infinite}
 @keyframes load-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+/* Small spinning spiral under the photo — a second, more legible "still
+   loading" signal alongside the pulse/progress bar. Fades out with
+   #loadBarWrap once runLoader's finish() kicks in (see main.js). */
+#loadSpiral{
+  width:34px;height:34px;color:var(--muted);
+  animation:load-spin 1.1s linear infinite;
+  transition:opacity 200ms ease;
+}
+#loadSpiral path{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+@keyframes load-spin{to{transform:rotate(360deg)}}
 #loadBarWrap{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--line)}
 #loadBar{height:100%;width:0;background:var(--ink)}
 body{
