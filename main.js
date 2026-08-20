@@ -400,9 +400,9 @@ render();
     urls.forEach((url,i)=>{
       const el=document.createElement("img");
       el.src=url;el.alt="";el.className="rain-drop";
-      const size=(64+Math.random()*16)*sizeScale(items[i][0]);
+      const size=(128+Math.random()*32)*sizeScale(items[i][0]);
       el.style.width=size+"px";
-      el.style.left=(37.5+Math.random()*25)+"%";
+      el.style.left=(25+Math.random()*50)+"%";
       const dur=7+Math.random()*7;
       el.style.animationDuration=dur+"s";
       el.style.animationDelay=(-Math.random()*dur)+"s";
