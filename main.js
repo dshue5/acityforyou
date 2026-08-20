@@ -388,20 +388,21 @@ render();
     });
     const items=[...seen].map(s=>JSON.parse(s));
     const urls=await Promise.all(items.map(([src,crop])=>stripWhiteBg(src,crop)));
-    const N=42;
-    for(let i=0;i<N;i++){
-      const url=urls[Math.floor(Math.random()*urls.length)];
+    /* One sprite per unique image (not a random pick per sprite) so the
+       same object can never be visible twice at once — each item falls
+       on its own independent loop. */
+    urls.forEach(url=>{
       const el=document.createElement("img");
       el.src=url;el.alt="";el.className="rain-drop";
-      const size=48+Math.random()*84;
+      const size=64+Math.random()*16;
       el.style.width=size+"px";
-      el.style.left=(Math.random()*100)+"%";
+      el.style.left=(25+Math.random()*50)+"%";
       const dur=7+Math.random()*7;
       el.style.animationDuration=dur+"s";
       el.style.animationDelay=(-Math.random()*dur)+"s";
       el.style.setProperty("--rot",(Math.random()*540-270)+"deg");
       overlay.appendChild(el);
-    }
+    });
   }
   async function toggle(){
     on=!on;
