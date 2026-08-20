@@ -360,8 +360,14 @@ render();
   if(!overlay||!imgEl||!bar)return;
   /* Slow, steady cycling on the intro screen itself, after the loader's
      photo has landed in .intro-photo — crossfades to a new random pool
-     photo every ~1.8s. Stops once the quiz actually starts (renderIntro's
-     markup, including #introImg, gets replaced) or the pool is trivial. */
+     photo every ~1.2s. Stops once the quiz actually starts (renderIntro's
+     markup, including #introImg, gets replaced) or the pool is trivial.
+     True crossfade via a "ghost" clone: #introImg is swapped to the new
+     photo immediately (opaque from frame one), and a ghost holding the
+     OLD photo sits on top of it fading itself out — the stack is always
+     fully opaque, so there's never an instant with nothing to show
+     (which a plain single-image opacity:0->1 fade-in hits at its start,
+     briefly revealing the page behind it). */
   function ambientCycle(pool,current){
     if(started)return;
     const introImg=document.getElementById("introImg");
@@ -372,18 +378,19 @@ render();
       const next=candidates[Math.floor(Math.random()*candidates.length)];
       const pre=new Image();
       pre.onload=()=>{
-        if(started||!document.body.contains(introImg))return;
-        /* Swap first (already decoded/preloaded, so this paints the new
-           photo instantly), then only fade IN — no separate fade-to-0
-           step, which would hit a genuine blank/white instant at its
-           midpoint. Same approach as animateCityPhoto. */
+        const wrap=introImg.parentElement;
+        if(started||!wrap||!document.body.contains(introImg))return;
+        const ghost=introImg.cloneNode();
+        ghost.removeAttribute("id");
+        ghost.className="ghost";
+        wrap.appendChild(ghost);
         introImg.src=next;
-        introImg.animate([{opacity:0},{opacity:1}],{duration:420,easing:"ease"});
+        ghost.animate([{opacity:1},{opacity:0}],{duration:300,easing:"ease"}).onfinish=()=>ghost.remove();
         ambientCycle(pool,next);
       };
       pre.onerror=()=>ambientCycle(pool,current);
       pre.src=next;
-    },1800);
+    },1200);
   }
   /* FLIP: measure #loadImg where it's actually sitting (centered, fixed
      size), measure #introImg's real target slot (already laid out in the

@@ -79,12 +79,18 @@ body{
    main.js) — sits above the title so the loader reads as one continuous
    motion into the page rather than a separate splash that just vanishes. */
 .intro-photo{
-  width:min(30vw,180px);aspect-ratio:1/1;overflow:hidden;
+  width:min(30vw,180px);aspect-ratio:1/1;overflow:hidden;position:relative;
   box-shadow:var(--shadow);
 }
 .intro-photo img{
   display:block;width:100%;height:100%;object-fit:cover;object-position:center;
 }
+/* The ambient-cycle "ghost" (see ambientCycle in main.js) sits on top of
+   the already-swapped #introImg and only ever fades itself out — the new
+   photo underneath is opaque from the first frame, so there's never an
+   instant with nothing opaque in the stack (which is what a plain
+   opacity:0->1 fade-in on a single image would hit at its start). */
+.intro-photo .ghost{position:absolute;inset:0}
 .intro-title{
   font-family:var(--disp);font-weight:300;font-size:clamp(32px,7vw,88px);
   letter-spacing:-0.03em;line-height:1.02;margin:0;color:var(--ink);
