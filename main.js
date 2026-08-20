@@ -413,19 +413,30 @@ render();
     imgEl.style.position="fixed";imgEl.style.margin="0";
     imgEl.style.left=startRect.left+"px";imgEl.style.top=startRect.top+"px";
     imgEl.style.width=startRect.width+"px";imgEl.style.height=startRect.height+"px";
-    overlay.style.transition="background-color 550ms ease";
-    requestAnimationFrame(()=>{
+    const HOLD_MS=150,MOVE_MS=650;
+    /* Brief hold at full size before it starts moving. Diving straight
+       into the shrink read as a warp/snap — a front-loaded easing curve
+       (like the .22,1,.36,1 used elsewhere for quick reveals) puts most
+       of a large 420->180px resize into its first ~150ms, and combined
+       with object-fit:cover re-cropping a detailed photo that fast, it
+       visually distorts even though the box itself stays perfectly
+       square throughout. The hold lets the eye register "this is the
+       photo" before it travels; the smoother standard easing (rather
+       than front-loaded) spreads the motion evenly instead of front-
+       loading it. */
+    setTimeout(()=>{
+      overlay.style.transition=`background-color ${MOVE_MS}ms ease`;
       overlay.style.background="transparent";
       imgEl.style.transition=
-        "left 620ms cubic-bezier(.22,1,.36,1), top 620ms cubic-bezier(.22,1,.36,1),"+
-        "width 620ms cubic-bezier(.22,1,.36,1), height 620ms cubic-bezier(.22,1,.36,1)";
+        `left ${MOVE_MS}ms cubic-bezier(.4,0,.2,1), top ${MOVE_MS}ms cubic-bezier(.4,0,.2,1),`+
+        `width ${MOVE_MS}ms cubic-bezier(.4,0,.2,1), height ${MOVE_MS}ms cubic-bezier(.4,0,.2,1)`;
       imgEl.style.left=landRect.left+"px";imgEl.style.top=landRect.top+"px";
       imgEl.style.width=landRect.width+"px";imgEl.style.height=landRect.height+"px";
-    });
+    },HOLD_MS);
     setTimeout(()=>{
       overlay.style.display="none";
       ambientCycle(pool,introImg.src.split("/").slice(-2).join("/"));
-    },650);
+    },HOLD_MS+MOVE_MS);
   }
   const pool=[];
   const names=Object.keys(CITIES);
