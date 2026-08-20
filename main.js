@@ -384,10 +384,14 @@ render();
     built=true;
     const seen=new Set();
     FAMILIES.forEach(f=>{
-      f.opts.forEach(o=>{if(o.img)seen.add(JSON.stringify([o.img,!!f.snug]));});
+      f.opts.forEach(o=>{if(o.img)seen.add(o.img);});
     });
-    const items=[...seen].map(s=>JSON.parse(s));
-    const urls=await Promise.all(items.map(([src,crop])=>stripWhiteBg(src,crop)));
+    /* Always crop here, regardless of each question's own "snug" flag —
+       that flag exists to keep e.g. the drinks row visually consistent
+       in the quiz, which doesn't matter for rain. Without it, drinks
+       render from their full padded square and look tiny. */
+    const items=[...seen];
+    const urls=await Promise.all(items.map(src=>stripWhiteBg(src,true)));
     /* One sprite per unique image (not a random pick per sprite) so the
        same object can never be visible twice at once — each item falls
        on its own independent loop. Most items render near their real
@@ -400,7 +404,7 @@ render();
     urls.forEach((url,i)=>{
       const el=document.createElement("img");
       el.src=url;el.alt="";el.className="rain-drop";
-      const size=(128+Math.random()*32)*sizeScale(items[i][0]);
+      const size=(128+Math.random()*32)*sizeScale(items[i]);
       el.style.width=size+"px";
       el.style.left=(25+Math.random()*50)+"%";
       const dur=7+Math.random()*7;
