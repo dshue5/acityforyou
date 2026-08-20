@@ -280,24 +280,38 @@ function updateScoreCityDots(name){
 }
 window.showCityDetail=name=>{
   if(!__resultState||name===__resultState.current)return;
-  const{win,winTie,pctByCity}=__resultState;
+  const{win,winTie,pctByCity,top5}=__resultState;
   __resultState.current=name;
-  document.querySelectorAll(".brow").forEach(el=>el.classList.toggle("active",el.dataset.city===name));
-  const isWinner=name===win;
-  document.querySelector("#cityDetail .verdict").textContent=isWinner?"You plot nearest to":"Also close —";
+  document.querySelectorAll(".brow,.epill").forEach(el=>el.classList.toggle("active",el.dataset.city===name));
+  const isWinner=name===win,inTop5=top5.has(name);
+  document.querySelector("#cityDetail .verdict").textContent=isWinner?"You plot nearest to":inTop5?"Also close —":"Exploring —";
   document.querySelector("#cityDetail .city").innerHTML=cityNameHTML(name);
   document.querySelector("#cityDetail .bio").textContent=BIO[name];
-  document.querySelector("#cityDetail .tie").innerHTML=isWinner?winTie:`${Math.round(pctByCity[name]*100)}% match — one of your top five.`;
+  /* Outside the top 5 the blend probability rounds to 0% (long tail of
+     a 33-city softmax) — showing that reads as broken, so it's dropped
+     in favor of plain framing instead. */
+  const tieText=isWinner?winTie:inTop5?`${Math.round(pctByCity[name]*100)}% match — one of your top five.`:"Not one of your closest matches, but worth a look.";
+  document.querySelector("#cityDetail .tie").innerHTML=tieText;
   animateCityPhoto(name);
   updateScoreCityDots(name);
+};
+window.toggleExplore=()=>{
+  const grid=document.getElementById("exploreGrid"),btn=document.getElementById("exploreToggle");
+  const open=grid.hasAttribute("hidden");
+  if(open)grid.removeAttribute("hidden");else grid.setAttribute("hidden","");
+  btn.classList.toggle("open",open);
+  btn.querySelector(".et-label").textContent=open?"Hide all cities":"Explore all cities";
 };
 function result(){
   const r=ranked(), b=blend(r), win=r[0][0], gap=r[1][1]-r[0][1];
   const winTie=gap<1.2?`A near-tie with <b>${r[1][0]}</b> — you sit right on the border.`:`Your closest match by a clear margin.`;
   const top=b.slice(0,5), max=top[0][1];
-  const pctByCity=Object.fromEntries(top.map(([c,p])=>[c,p]));
-  __resultState={win,winTie,pctByCity,current:win};
+  const pctByCity=Object.fromEntries(b.map(([c,p])=>[c,p]));
+  const top5=new Set(top.map(([c])=>c));
+  __resultState={win,winTie,pctByCity,top5,current:win};
   const rows=top.map(([c,p],i)=>`<button class="brow${c===win?' active':''}" data-city="${c}" onclick="showCityDetail('${c}')" aria-label="View ${c}"><span class="bn">${c}</span><span class="bt"><span class="bf" data-w="${(p/max*100).toFixed(0)}" data-col="${i===0?'var(--coral)':'var(--ultra)'}" style="width:0"></span></span><span class="bp">${(p*100).toFixed(0)}%</span><span class="barrow" aria-hidden="true">&#8594;</span></button>`).join("");
+  const allNames=Object.keys(CITIES).sort();
+  const explorePills=allNames.map(c=>`<button class="epill${c===win?' active':''}" data-city="${c}" onclick="showCityDetail('${c}')" aria-label="View ${c}">${c}</button>`).join("");
   const srows=AXES.map((a,i)=>{
     const val=sum[i], pos=(Math.max(-SCALE,Math.min(SCALE,val))+SCALE)/(2*SCALE)*100;
     const cval=CITIES[win][i], cpos=(Math.max(-SCALE,Math.min(SCALE,cval))+SCALE)/(2*SCALE)*100;
@@ -313,6 +327,10 @@ function result(){
          <div class="score-legend"><span class="lg you">You</span><span class="lg legend-city" id="scoreLegendCity">${win}</span></div>
          <div id="scoreRows">${srows}</div>
        </div>
+     </div>
+     <div class="explore-col">
+       <button class="explore-toggle" id="exploreToggle" onclick="toggleExplore()"><span class="et-label">Explore all cities</span><span class="et-arrow" aria-hidden="true">&#8594;</span></button>
+       <div class="explore-grid" id="exploreGrid" hidden>${explorePills}</div>
      </div>
      <button class="again" onclick="reset()">Re-map me</button>
    </div></div>`;

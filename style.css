@@ -317,6 +317,31 @@ body{
 .sdot.citymark{width:12px;height:12px;background:var(--card);border:2.5px solid var(--muted);z-index:1}
 .spoles{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:6px;letter-spacing:0.02em}
 
+/* Explore-all, below the top-5 blend — collapsed by default (38 cities
+   is a lot to dump on the page at once) behind a plain text toggle that
+   flips into a wrapped grid of every city name. Clicking any pill reuses
+   showCityDetail(), same as a top-5 row. */
+.explore-col{width:100%;max-width:900px;margin:0 0 28px;text-align:left}
+.explore-toggle{
+  background:none;border:none;padding:0;cursor:pointer;font-family:var(--mono);
+  font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:0.02em;
+  display:inline-flex;align-items:center;gap:8px;transition:color 160ms ease;
+}
+.explore-toggle:hover{color:var(--ink)}
+.explore-toggle .et-arrow{display:inline-block;transition:transform 200ms ease}
+.explore-toggle.open .et-arrow{transform:rotate(90deg)}
+.explore-grid{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;
+}
+.epill{
+  background:var(--paper);border:1px solid var(--line);border-radius:999px;
+  padding:8px 16px;font-family:var(--mono);font-size:12.5px;font-weight:500;
+  color:var(--muted);cursor:pointer;transition:background 160ms ease,border-color 160ms ease,color 160ms ease;
+}
+.epill:hover{color:var(--ink);border-color:var(--muted)}
+.epill:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.epill.active{background:var(--ink);border-color:var(--ink);color:#fff}
+
 .again{
   background:var(--ink);color:#fff;border:none;font-weight:600;font-family:var(--mono);
   font-size:14px;padding:14px 24px;border-radius:var(--radius-sm);cursor:pointer;
