@@ -373,11 +373,13 @@ render();
       const pre=new Image();
       pre.onload=()=>{
         if(started||!document.body.contains(introImg))return;
-        introImg.animate([{opacity:1},{opacity:0}],{duration:260,easing:"ease"}).onfinish=()=>{
-          introImg.src=next;
-          introImg.animate([{opacity:0},{opacity:1}],{duration:320,easing:"ease"});
-          ambientCycle(pool,next);
-        };
+        /* Swap first (already decoded/preloaded, so this paints the new
+           photo instantly), then only fade IN — no separate fade-to-0
+           step, which would hit a genuine blank/white instant at its
+           midpoint. Same approach as animateCityPhoto. */
+        introImg.src=next;
+        introImg.animate([{opacity:0},{opacity:1}],{duration:420,easing:"ease"});
+        ambientCycle(pool,next);
       };
       pre.onerror=()=>ambientCycle(pool,current);
       pre.src=next;
