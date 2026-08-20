@@ -372,3 +372,43 @@ render();
     probe.src=src;
   });
 })();
+
+/* Shift+R — a full-screen loop of every quiz object falling like rain,
+   for recording a promo thumbnail. Purely a marketing/dev tool, no link
+   from the UI; toggles on/off, built once then reused. */
+(function initRain(){
+  const overlay=document.getElementById("rainOverlay");
+  if(!overlay)return;
+  let on=false,built=false;
+  async function build(){
+    built=true;
+    const seen=new Set();
+    FAMILIES.forEach(f=>{
+      f.opts.forEach(o=>{if(o.img)seen.add(JSON.stringify([o.img,!!f.snug]));});
+    });
+    const items=[...seen].map(s=>JSON.parse(s));
+    const urls=await Promise.all(items.map(([src,crop])=>stripWhiteBg(src,crop)));
+    const N=42;
+    for(let i=0;i<N;i++){
+      const url=urls[Math.floor(Math.random()*urls.length)];
+      const el=document.createElement("img");
+      el.src=url;el.alt="";el.className="rain-drop";
+      const size=48+Math.random()*84;
+      el.style.width=size+"px";
+      el.style.left=(Math.random()*100)+"%";
+      const dur=7+Math.random()*7;
+      el.style.animationDuration=dur+"s";
+      el.style.animationDelay=(-Math.random()*dur)+"s";
+      el.style.setProperty("--rot",(Math.random()*540-270)+"deg");
+      overlay.appendChild(el);
+    }
+  }
+  async function toggle(){
+    on=!on;
+    if(on&&!built)await build();
+    overlay.classList.toggle("on",on);
+  }
+  window.addEventListener("keydown",e=>{
+    if(e.shiftKey&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&(e.key==="R"||e.key==="r"))toggle();
+  });
+})();

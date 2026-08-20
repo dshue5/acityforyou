@@ -323,4 +323,24 @@ body{
   :root{ --pad:20px; --radius:18px; }
 }
 
+/* Shift+R "rain" screen (see toggleRain in main.js) — a full-screen loop
+   of every quiz object falling, for recording a promo thumbnail. Not part
+   of the quiz itself, so it sits above everything, opaque, and ignores
+   clicks. */
+.rain-overlay{
+  position:fixed;inset:0;background:var(--bg);z-index:9999;
+  overflow:hidden;display:none;pointer-events:none;
+}
+.rain-overlay.on{display:block}
+.rain-drop{
+  position:absolute;top:0;object-fit:contain;
+  filter:drop-shadow(0 14px 20px rgba(10,10,10,.16));
+  animation-name:rain-fall;animation-timing-function:linear;animation-iteration-count:infinite;
+  will-change:transform;
+}
+@keyframes rain-fall{
+  from{transform:translateY(-30vh) rotate(0deg)}
+  to{transform:translateY(130vh) rotate(var(--rot))}
+}
+
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
