@@ -150,6 +150,7 @@ function renderArt(f){
 }
 function renderIntro(){
   app.innerHTML=`<div class="intro" id="intro">
+     <div class="intro-photo"><img id="introImg" alt=""></div>
      <h1 class="intro-title">${wordsHTML("A City For <em>You.</em>")}</h1>
      <button class="intro-start" id="start">Click to begin</button>
    </div>`;
@@ -346,16 +347,47 @@ render();
 
 /* Opening loading screen — probes for whichever Cities/*.webp files
    actually exist (the library grows over time, so not all 33 are
-   guaranteed present), then rapidly shuffles the found ones behind a
-   thin progress bar before fading out to reveal the quiz underneath. */
+   guaranteed present), then steps through a handful of them at a slow,
+   constant pace before the last one slides into the .intro-photo square
+   above the title (see renderIntro) instead of just fading away. */
 (function runLoader(){
   const overlay=document.getElementById("loadOverlay");
   const imgEl=document.getElementById("loadImg");
   const bar=document.getElementById("loadBar");
+  const barWrap=document.getElementById("loadBarWrap");
   if(!overlay||!imgEl||!bar)return;
+  const STEP_MS=750,STEPS=4;
+  /* FLIP: measure #loadImg where it's actually sitting (centered, fixed
+     size), measure #introImg's real target slot (already laid out in the
+     hidden intro underneath), then animate #loadImg's own box between
+     those two rects while the overlay's background fades away — so the
+     photo itself appears to travel from the loader into the page rather
+     than the loader just disappearing and a second photo popping in. */
   function finish(){
-    overlay.style.opacity="0";
-    setTimeout(()=>{overlay.style.display="none";},420);
+    const introImg=document.getElementById("introImg");
+    if(!introImg||!imgEl.src){
+      overlay.style.transition="opacity 420ms ease";
+      overlay.style.opacity="0";
+      setTimeout(()=>{overlay.style.display="none";},420);
+      return;
+    }
+    const startRect=imgEl.getBoundingClientRect();
+    introImg.src=imgEl.src;
+    const landRect=introImg.getBoundingClientRect();
+    if(barWrap){barWrap.style.transition="opacity 200ms ease";barWrap.style.opacity="0";}
+    imgEl.style.position="fixed";imgEl.style.margin="0";
+    imgEl.style.left=startRect.left+"px";imgEl.style.top=startRect.top+"px";
+    imgEl.style.width=startRect.width+"px";imgEl.style.height=startRect.height+"px";
+    overlay.style.transition="background-color 550ms ease";
+    requestAnimationFrame(()=>{
+      overlay.style.background="transparent";
+      imgEl.style.transition=
+        "left 620ms cubic-bezier(.22,1,.36,1), top 620ms cubic-bezier(.22,1,.36,1),"+
+        "width 620ms cubic-bezier(.22,1,.36,1), height 620ms cubic-bezier(.22,1,.36,1)";
+      imgEl.style.left=landRect.left+"px";imgEl.style.top=landRect.top+"px";
+      imgEl.style.width=landRect.width+"px";imgEl.style.height=landRect.height+"px";
+    });
+    setTimeout(()=>{overlay.style.display="none";},650);
   }
   const pool=[];
   const names=Object.keys(CITIES);
@@ -365,18 +397,16 @@ render();
     if(!pool.length){finish();return;}
     shuffle(pool);
     let idx=0;
-    const t0=Date.now();
-    function step(){
+    function step(n){
       imgEl.src=pool[idx++%pool.length];
-      const el=Date.now()-t0;
-      if(el<1100)setTimeout(step,el<500?60:el<900?150:300);
+      if(n<STEPS-1)setTimeout(()=>step(n+1),STEP_MS);
     }
     requestAnimationFrame(()=>{
-      bar.style.transition="width 1.1s linear";
+      bar.style.transition=`width ${STEP_MS*STEPS}ms linear`;
       bar.style.width="100%";
-      step();
+      step(0);
     });
-    setTimeout(finish,1100);
+    setTimeout(finish,STEP_MS*STEPS);
   }
   let shown=false;
   names.forEach(name=>{

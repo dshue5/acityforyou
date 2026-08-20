@@ -37,14 +37,13 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 
-/* Opening loading screen — rapidly shuffles through real city photos
-   (see preloadAllArt/runLoader in main.js) as a teaser before the quiz
-   reveals itself, matching the shuffle-loader pattern used on Brand
-   Alchemist. Sits above everything; fades out once the shuffle settles. */
+/* Opening loading screen — steps through real city photos, one every
+   .75s (see preloadAllArt/runLoader in main.js), then the last one shown
+   slides into the .intro-photo square above the title instead of just
+   fading away. Sits above everything until that slide finishes. */
 #loadOverlay{
   position:fixed;inset:0;z-index:999;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
-  transition:opacity 420ms ease;
 }
 #loadImg{
   width:min(56vw,420px);aspect-ratio:1/1;object-fit:cover;
@@ -66,15 +65,6 @@ body{
 
 .wrap{flex:1;display:flex;flex-direction:column;max-width:1320px;width:100%;margin:0 auto;padding:24px var(--pad) 40px}
 
-.top{
-  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
-}
-.mark{
-  font-family:var(--disp);font-weight:300;font-size:20px;color:var(--muted);
-  text-decoration:none;transition:color 160ms ease;
-}
-.mark:hover{color:var(--ink)}
-
 /* #app fills the remaining viewport height below the slim top bar, so
    .stage / .intro (its only children) can flex:1 and truly center in
    whatever's left of the screen — full-page per question, no sidebar. */
@@ -85,6 +75,16 @@ body{
   text-align:center;gap:32px;opacity:1;transition:opacity 450ms ease;
 }
 .intro.fade-out{opacity:0}
+/* The square the loading screen's photo slides into (see finish() in
+   main.js) — sits above the title so the loader reads as one continuous
+   motion into the page rather than a separate splash that just vanishes. */
+.intro-photo{
+  width:min(30vw,180px);aspect-ratio:1/1;overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.intro-photo img{
+  display:block;width:100%;height:100%;object-fit:cover;object-position:center;
+}
 .intro-title{
   font-family:var(--disp);font-weight:300;font-size:clamp(32px,7vw,88px);
   letter-spacing:-0.03em;line-height:1.02;margin:0;color:var(--ink);
