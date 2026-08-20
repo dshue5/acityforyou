@@ -401,10 +401,17 @@ render();
       imgEl.src=pool[idx++%pool.length];
       if(n<STEPS-1)setTimeout(()=>step(n+1),STEP_MS);
     }
+    /* step() must not depend on requestAnimationFrame — rAF only fires
+       while the tab is actually visible/rendering, so on a backgrounded
+       or occluded tab it can stall indefinitely, leaving the photo frozen
+       on whatever it last showed while the independent finish() timeout
+       below still fires on schedule. Run the shuffle via its own
+       setTimeout chain (throttled but never skipped in a background tab)
+       and keep rAF only for the purely cosmetic bar-width kickoff. */
+    step(0);
     requestAnimationFrame(()=>{
       bar.style.transition=`width ${STEP_MS*STEPS}ms linear`;
       bar.style.width="100%";
-      step(0);
     });
     setTimeout(finish,STEP_MS*STEPS);
   }
