@@ -339,6 +339,7 @@ body{
 .explore-grid{
   display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;
 }
+.explore-grid[hidden]{display:none}
 .epill{
   background:var(--paper);border:1px solid var(--line);border-radius:999px;
   padding:8px 16px;font-family:var(--mono);font-size:12.5px;font-weight:500;
