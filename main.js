@@ -443,8 +443,20 @@ render();
   const pool=[];
   const names=Object.keys(CITIES);
   let remaining=names.length;
-  function probeDone(){
-    if(--remaining>0)return;
+  let shown=false, triggered=false;
+  /* Kicks off the fast shuffle + progress bar + finish() sequence, using
+     whatever's landed in `pool` so far. Guarded so it only ever runs
+     once — it's called both by probeDone() (all probes finished) and by
+     the 1s hard-cap timeout below, whichever comes first. Previously
+     this only fired once literally all 39 probes had resolved, so one
+     slow/stalled request could hold up the whole loader; capping it
+     means a bad connection now degrades gracefully (fewer photos in the
+     shuffle, or none at all — finish() already handles an empty pool)
+     instead of stalling. Probes still in flight after this fires keep
+     landing in `pool` regardless, for ambientCycle to use later. */
+  function startSequence(){
+    if(triggered)return;
+    triggered=true;
     if(!pool.length){finish(pool);return;}
     shuffle(pool);
     let idx=0;
@@ -467,7 +479,10 @@ render();
     });
     setTimeout(()=>finish(pool),1100);
   }
-  let shown=false;
+  function probeDone(){
+    if(--remaining>0)return;
+    startSequence();
+  }
   names.forEach(name=>{
     const src=`Cities/${cityFile(name)}.webp`;
     const probe=new Image();
@@ -485,6 +500,7 @@ render();
     probe.onerror=probeDone;
     probe.src=src;
   });
+  setTimeout(startSequence,1000);
 })();
 
 /* Shift+R — a full-screen loop of every quiz object falling like rain,
