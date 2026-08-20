@@ -230,7 +230,17 @@ body{
    to one uniform height. Pull the row tight so items read close together,
    closer to how they looked as one shared composite image. */
 .opts.photo-row.snug{gap:clamp(2px,1vw,18px)}
-.opts.photo-row.snug .card-float{flex:0 0 auto;max-width:none}
+/* flex-shrink:1 (not the 0 0 auto used to mean "never shrink") + min-width:0
+   so on a narrow viewport, if the row's natural (unshrunk) width would
+   overflow, flexbox squeezes every item down proportionally to actually
+   fit — .card-photo's max-width:100% then recalculates against that
+   smaller box and the image scales down with it, aspect preserved.
+   Without this, a nowrap row wider than the viewport gets centered by
+   justify-content:center with its overflow split on both sides, but only
+   the right side is reachable by scrolling — the left side runs off into
+   unreachable negative-x and just clips. Doesn't change anything on a
+   screen with room to spare; shrink only ever kicks in once it's needed. */
+.opts.photo-row.snug .card-float{flex:0 1 auto;min-width:0;max-width:none}
 .opts.photo-row.snug .card-photo{
   aspect-ratio:auto;width:auto;height:auto;
   max-height:clamp(180px,34vh,380px);max-width:min(100%,320px);

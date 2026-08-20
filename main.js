@@ -300,10 +300,6 @@ window.showCityDetail=name=>{
   document.querySelector("#cityDetail .tie").innerHTML=tieText;
   animateCityPhoto(name);
   updateScoreCityDots(name);
-  /* The explore-all grid sits well below #cityDetail, so a pill click
-     needs to actually bring the updated profile into view — otherwise
-     it silently updates off-screen above the fold. */
-  document.getElementById("cityDetail").scrollIntoView({behavior:"smooth",block:"start"});
 };
 window.toggleExplore=()=>{
   const grid=document.getElementById("exploreGrid"),btn=document.getElementById("exploreToggle");
