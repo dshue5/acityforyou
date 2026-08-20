@@ -9,7 +9,12 @@ const app=document.getElementById("app");
    original single-click-advances flow. */
 const isTouch=matchMedia("(hover: none) and (pointer: coarse)").matches;
 
-const SCALE=9;
+/* Purely a display-axis scale for the "Where you landed" dots (see
+   result()) — every authored CITIES value tops out at ±3, so at the old
+   SCALE=9 even a city sitting at the true max never reached past ~67% on
+   the bar, reading as "meh, balanced" instead of extreme. Doesn't touch
+   matching/ranking math (ranked() clamps to ±3 independent of this). */
+const SCALE=4;
 const fmt=n=>(n>0?"+":"")+n;
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 /* Question order reshuffles every playthrough, but the keys question
