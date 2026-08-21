@@ -282,7 +282,7 @@ body{
    in main.js: data-strip swaps the src to the bg-removed version first;
    this crop then works on that result, not the raw file). */
 .city-photo{
-  width:min(90vw,720px);aspect-ratio:1/1;margin:0 auto 32px;
+  width:min(70vw,480px);aspect-ratio:1/1;margin:0 auto 32px;
   overflow:hidden;
 }
 .city-photo img{
